@@ -1,0 +1,47 @@
+%% =========================================================================
+%% MINPOSTEL SMART DISPLAY (MSD) - DIAGRAM 06: SEQUENCE - PLAYLIST & BILINGUAL CYCLE
+%% Description: Automated slide rotation, bilingual FR/EN alternance, and
+%%              real-time item synchronization without browser reload.
+%% =========================================================================
+
+sequenceDiagram
+    autonumber
+    participant Kiosk as 🖥️ Écran Kiosque (PublicDisplayPage)
+    participant API as 🚀 Express REST API (/api/feed)
+    participant Socket as ⚡ Socket.IO Engine
+    participant Admin as 💻 Admin Dashboard
+
+    Note over Kiosk,API: 1. INITIALISATION DE L'ÉCRAN À LA MISE SOUS TENSION
+    Kiosk->>API: GET /api/feed/display/MINPOSTEL-MAIN-ENTRANCE-01
+    activate API
+    API-->>Kiosk: 200 OK (Flux agrégé: Annonces, Réunions du jour, Événements, Paramètres)
+    deactivate API
+
+    Kiosk->>Socket: Émet "DISPLAY_REGISTER" {screenId, status: "ONLINE"}
+    activate Socket
+    Socket-->>Admin: Diffuse "DISPLAY_STATUS_UPDATE" (Écran Vert / ONLINE)
+    deactivate Socket
+
+    Note over Kiosk: 2. CYCLE AUTOMATIQUE DU CARROUSEL & ALTERNANCE LINGUISTIQUE
+    loop Toutes les N secondes (ex: 15s)
+        Kiosk->>Kiosk: Anime la barre de progression (0% à 100%)
+        Kiosk->>Kiosk: Passe à la diapositive suivante: (index + 1) % total
+        alt Fin du tour complet du carrousel (index == 0)
+            Kiosk->>Kiosk: Bascule la langue active: FR ⟷ EN
+            Kiosk->>Kiosk: Ré-affiche les titres et descriptions dans la nouvelle langue
+        end
+        Kiosk->>Kiosk: Génère le QR Code correspondant à l'élément affiché
+    end
+
+    Note over Admin,Kiosk: 3. SYNCHRONISATION INSTANTANÉE LORS D'UN AJOUT ÉDITORIAL
+    Admin->>API: POST /api/meetings (Nouvelle réunion de crise au Cabinet)
+    activate API
+    API->>Socket: io.emit("MEETING_CREATED", newMeetingData)
+    deactivate API
+
+    activate Socket
+    Socket-->>Kiosk: Réception temps réel "MEETING_CREATED"
+    deactivate Socket
+
+    Kiosk->>Kiosk: Intègre immédiatement la nouvelle réunion dans la playlist active
+    Note over Kiosk: Mise à jour sans aucun rechargement de page (F5 inutile)

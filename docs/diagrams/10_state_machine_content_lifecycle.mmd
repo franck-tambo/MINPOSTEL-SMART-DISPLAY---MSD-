@@ -1,0 +1,44 @@
+%% =========================================================================
+%% MINPOSTEL SMART DISPLAY (MSD) - DIAGRAM 10: STATE MACHINE - CONTENT LIFECYCLE
+%% Description: State Machine Diagram modeling editorial lifecycle of
+%%              Announcements, Meetings, Events, and Official Communications.
+%% =========================================================================
+
+stateDiagram-v2
+    [*] --> BROUILLON : Création par l'Agent de Communication
+
+    state BROUILLON {
+        [*] --> SaisieBilingue : Rédaction FR et EN obligatoire
+        SaisieBilingue --> AttachementMedia : Téléversement affiche / logo optionnel
+    }
+
+    BROUILLON --> PROGRAMME : Date de début future (start_date > Today)
+    BROUILLON --> PUBLIE : Publication immédiate (start_date <= Today)
+
+    state PROGRAMME {
+        [*] --> EnAttenteDate : Stocké en base de données
+        EnAttenteDate --> DéclenchementAutomatique : Arrivée de la date/heure de début
+    }
+
+    PROGRAMME --> PUBLIE : Début de la période de diffusion
+
+    state PUBLIE {
+        [*] --> InjectionPlaylist : Agrégation dans /api/feed
+        InjectionPlaylist --> DiffusionTempsReel : Émission Socket.IO vers les écrans
+        DiffusionTempsReel --> GenerationQRCode : Calcul de l'URL pour les usagers
+    }
+
+    PUBLIE --> EN_COURS : Pour les Réunions / Ateliers (Heure actuelle entre début et fin)
+    EN_COURS --> CLOTURE : Heure de fin atteinte (end_time)
+
+    PUBLIE --> EXPIRE : Date de fin atteinte (end_date < Today)
+    PUBLIE --> ANNULE : Annulation manuelle par l'administrateur
+
+    state EXPIRE {
+        [*] --> RetraitPlaylist : Retiré automatiquement du flux d'affichage
+        RetraitPlaylist --> ArchivageBDD : Conservé pour historique et statistiques
+    }
+
+    EXPIRE --> [*]
+    CLOTURE --> [*]
+    ANNULE --> [*]

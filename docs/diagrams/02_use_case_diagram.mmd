@@ -1,0 +1,100 @@
+%% =========================================================================
+%% MINPOSTEL SMART DISPLAY (MSD) - DIAGRAM 02: UML USE CASE DIAGRAM
+%% Description: Formal UML Use Case Diagram capturing all user interactions,
+%%              administrative workflows, and autonomous system actors.
+%% =========================================================================
+
+flowchart LR
+    %% ACTORS
+    subgraph ACTORS ["ACTEURS DU SYSTÈME"]
+        SA["👤 Administrateur Principal<br/>(Super Admin)"]
+        CM["👤 Gestionnaire de Contenu<br/>(Content Manager)"]
+        VP["👥 Visiteur / Usager<br/>(Public)"]
+        DS["🖥️ Écran Kiosque Entrée<br/>(Système Matériel)"]
+    end
+
+    %% USE CASES BOUNDARY
+    subgraph MSD_SYSTEM ["SYSTÈME MINPOSTEL SMART DISPLAY (MSD)"]
+        
+        subgraph PKG_AUTH ["Sécurité & Contrôle d'Accès"]
+            UC_LOGIN(["S'authentifier (JWT / Cookie)"])
+            UC_USERS(["Gérer les Comptes & Rôles"])
+            UC_LOGS(["Consulter les Journaux d'Activité (Audit)"])
+        end
+
+        subgraph PKG_CONTENT ["Gestion Éditoriale & Diffusion"]
+            UC_ANN(["Publier / Modifier des Annonces"])
+            UC_MEET(["Planifier des Réunions Ministérielles"])
+            UC_EVENT(["Organiser les Événements & Ateliers"])
+            UC_COMM(["Diffuser les Communications du Cabinet"])
+            UC_MEDIA(["Gérer la Médiathèque (Images/Vidéos)"])
+        end
+
+        subgraph PKG_EMERGENCY ["Gestion de Crise & Alertes"]
+            UC_URGENT_START(["Déclencher une Alerte Ministérielle Urgente"])
+            UC_URGENT_STOP(["Stopper la Diffusion de Crise"])
+        end
+
+        subgraph PKG_INFRA ["Infrastructure & Matériel"]
+            UC_SETTINGS(["Configurer les Paramètres (Durée, Thème)"])
+            UC_LOCATIONS(["Gérer les Bâtiments, Étages et Salles"])
+            UC_MONITOR(["Surveiller l'État de Santé des Écrans (Heartbeat)"])
+            UC_POWER(["Piloter la Gestion d'Énergie (Veille/Réveil)"])
+        end
+
+        subgraph PKG_KIOSK ["Affichage Public & Orientation"]
+            UC_DISPLAY_ROT(["Consulter le Carrousel Dynamique 16:9"])
+            UC_DISPLAY_LANG(["Observer l'Alternance Bilingue FR / EN"])
+            UC_DISPLAY_CLOCK(["Consulter l'Heure et la Météo de Yaoundé"])
+            UC_SCAN_QR(["Scanner le QR Code d'une Réunion / Événement"])
+            UC_MOBILE_NAV(["Naviguer sur le Guide Mobile Visiteur"])
+            UC_PINGS(["Émettre les Battements de Cœur (Heartbeats)"])
+        end
+
+    end
+
+    %% RELATIONSHIPS - SUPER ADMIN
+    SA --> UC_LOGIN
+    SA --> UC_USERS
+    SA --> UC_LOGS
+    SA --> UC_SETTINGS
+    SA --> UC_LOCATIONS
+    SA --> UC_MONITOR
+    SA --> UC_POWER
+    SA --> UC_URGENT_START
+    SA --> UC_URGENT_STOP
+
+    %% RELATIONSHIPS - CONTENT MANAGER (Inherits editorial capabilities)
+    CM --> UC_LOGIN
+    CM --> UC_ANN
+    CM --> UC_MEET
+    CM --> UC_EVENT
+    CM --> UC_COMM
+    CM --> UC_MEDIA
+    SA --> UC_ANN
+    SA --> UC_MEET
+    SA --> UC_EVENT
+
+    %% RELATIONSHIPS - VISITOR
+    VP --> UC_DISPLAY_ROT
+    VP --> UC_DISPLAY_LANG
+    VP --> UC_DISPLAY_CLOCK
+    VP --> UC_SCAN_QR
+    VP --> UC_MOBILE_NAV
+
+    %% RELATIONSHIPS - KIOSK HARDWARE
+    DS --> UC_PINGS
+    DS --> UC_DISPLAY_ROT
+
+    %% INCLUDE & EXTEND
+    UC_SCAN_QR -.->|"<<extend>>"| UC_MOBILE_NAV
+    UC_URGENT_START -.->|"<<include>>"| UC_LOGS
+    UC_MEET -.->|"<<include>>"| UC_LOCATIONS
+
+    classDef actorStyle fill:#1E293B,stroke:#0F172A,stroke-width:2px,color:#F8FAFC;
+    classDef ucStyle fill:#EFF6FF,stroke:#2563EB,stroke-width:1.5px,color:#1E3A8A;
+    classDef urgentStyle fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#991B1B;
+
+    class SA,CM,VP,DS actorStyle;
+    class UC_LOGIN,UC_USERS,UC_LOGS,UC_ANN,UC_MEET,UC_EVENT,UC_COMM,UC_MEDIA,UC_SETTINGS,UC_LOCATIONS,UC_MONITOR,UC_POWER,UC_DISPLAY_ROT,UC_DISPLAY_LANG,UC_DISPLAY_CLOCK,UC_SCAN_QR,UC_MOBILE_NAV,UC_PINGS ucStyle;
+    class UC_URGENT_START,UC_URGENT_STOP urgentStyle;

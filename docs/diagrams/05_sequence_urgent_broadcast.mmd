@@ -1,0 +1,55 @@
+%% =========================================================================
+%% MINPOSTEL SMART DISPLAY (MSD) - DIAGRAM 05: SEQUENCE - URGENT BROADCAST
+%% Description: Real-time emergency & crisis ministerial alert broadcast flow
+%%              demonstrating WebSocket event propagation and display override.
+%% =========================================================================
+
+sequenceDiagram
+    autonumber
+    actor Admin as 👤 Administrateur Principal
+    participant Dashboard as 💻 Admin Dashboard (SPA)
+    participant API as 🚀 Express REST API
+    participant Socket as ⚡ Socket.IO Engine
+    participant DB as 💾 Base de Données / Store
+    participant Kiosk as 🖥️ Écran Kiosque Entrée
+    actor Visitor as 👥 Visiteurs / Usagers
+
+    Note over Admin,Visitor: 1. DÉCLENCHEMENT D'UNE ALERTE MINISTÉRIELLE PRIORITAIRE
+    Admin->>Dashboard: Saisit message (FR + EN) & Priorité "CRITIQUE"
+    Admin->>Dashboard: Clique sur "Diffuser Alerte Immédiate"
+    Dashboard->>API: POST /api/urgent-messages/broadcast {message_fr, message_en, priority}
+    activate API
+    API->>API: Vérifie Token JWT & Droits Super Admin
+    API->>DB: Enregistre message & statut="ACTIVE", start_time=NOW()
+    API->>DB: Enregistre log d'activité (Audit Trail)
+    API->>Socket: io.emit("URGENT_MESSAGE_BROADCAST", urgentMessage)
+    deactivate API
+    
+    activate Socket
+    Socket-->>Kiosk: Événement WebSocket instantané < 50ms
+    Socket-->>Dashboard: Notification temps réel aux autres admins
+    deactivate Socket
+
+    activate Kiosk
+    Kiosk->>Kiosk: Interrompt immédiatement le carrousel normal
+    Kiosk->>Kiosk: Affiche le bandeau d'alerte rouge clignotant
+    Kiosk->>Kiosk: Déclenche le signal sonore d'attention (Audio API)
+    Kiosk-->>Visitor: Message d'urgence visible à 100% dans le hall
+    deactivate Kiosk
+
+    Note over Admin,Visitor: 2. FIN DE L'ALERTE & REPRISE DU SERVICE NORMAL
+    Admin->>Dashboard: Clique sur "Arrêter la Diffusion"
+    Dashboard->>API: POST /api/urgent-messages/stop/:id
+    activate API
+    API->>DB: Met à jour statut="INACTIVE", stopped_at=NOW(), calcule durée
+    API->>Socket: io.emit("URGENT_MESSAGE_STOPPED", { id })
+    deactivate API
+
+    activate Socket
+    Socket-->>Kiosk: Événement "URGENT_MESSAGE_STOPPED"
+    deactivate Socket
+
+    activate Kiosk
+    Kiosk->>Kiosk: Masque le bandeau d'alerte de crise
+    Kiosk->>Kiosk: Reprend la rotation normale des annonces et réunions
+    deactivate Kiosk

@@ -1,0 +1,65 @@
+%% =========================================================================
+%% MINPOSTEL SMART DISPLAY (MSD) - DIAGRAM 11: PHYSICAL DEPLOYMENT ARCHITECTURE
+%% Description: Physical deployment topology at the Ministry of Posts and
+%%              Telecommunications (MINPOSTEL), detailing hardware & network nodes.
+%% =========================================================================
+
+flowchart TB
+    %% SITE PRINCIPAL MINPOSTEL
+    subgraph SITE_MINPOSTEL ["🏛️ SITE DU MINISTÈRE DES POSTES ET TÉLÉCOMMUNICATIONS (YAOUNDÉ)"]
+        
+        %% HALL PRINCIPAL
+        subgraph ZONE_HALL ["📍 Hall de l'Entrée Principale (Rez-de-Chaussée)"]
+            TV_SCREEN["📺 Écran Géant Kiosque 55''- 65'' (16:9)<br/><b>Affichage Dynamique Principal</b><br/>• Résolution 1080p / 4K Landscape<br/>• Navigateur Web Tizen/WebOS/Android TV<br/>• URL: http://[IP_SERVEUR]:5173/display/MINPOSTEL-MAIN-ENTRANCE-01"]
+            SMARTPHONES["📱 Smartphones des Visiteurs & Usagers<br/>• Scannent les QR codes en direct<br/>• Connexion Wi-Fi Invité ou Données Mobiles 4G/5G"]
+        end
+
+        %% POSTE TECHNIQUE / CELLULE COM
+        subgraph ZONE_ADMIN ["💼 Cellule de Communication & DSI (Bâtiment Principal)"]
+            PC_ADMIN["💻 Ordinateur du Gestionnaire / DSI<br/>• Navigateur moderne (Chrome / Edge / Firefox)<br/>• URL: http://[IP_SERVEUR]:5173/login<br/>• Publication, gestion de crise, supervision"]
+        end
+
+        %% INFRASTRUCTURE SERVEUR INTERNE
+        subgraph ZONE_SERVER ["🖥️ Serveur Hôte d'Application (PC Local / Mini-PC NUC)"]
+            APP_SRV["⚙️ Serveur Backend Node.js (Port 5000)<br/>• API Express & Moteur Socket.IO<br/>• Daemons Heartbeat & Power Management"]
+            APP_CLIENT["🌐 Serveur Frontend Vite / Client (Port 5173)<br/>• Distribution des SPAs React 18"]
+            DB_LOCAL[("💾 BDD MySQL 8.0 / Store msd_store.json<br/>• Données locales & tolérance aux pannes")]
+            STORAGE_LOCAL[("📁 Répertoire Disque /uploads<br/>• Stockage des visuels et affiches")]
+            CF_DAEMON["🛡️ Daemon cloudflared.exe<br/>• Tunnel chiffré sortant sans ouverture de port"]
+
+            APP_SRV --- APP_CLIENT
+            APP_SRV --- DB_LOCAL
+            APP_SRV --- STORAGE_LOCAL
+            APP_SRV --- CF_DAEMON
+        end
+
+        %% COMMUTATEUR RÉSEAU
+        SWITCH_LAN["🔀 Routeur / Switch Wi-Fi & LAN MINPOSTEL<br/>(Sous-réseau IP Local: 10.x.x.x ou 192.168.x.x)"]
+        
+        TV_SCREEN <==>|"Liaison Wi-Fi ou HDMI Direct"| SWITCH_LAN
+        PC_ADMIN <==>|"Liaison Réseau LAN"| SWITCH_LAN
+        SWITCH_LAN <==>|"Ports 5000 & 5173"| APP_SRV
+        SMARTPHONES -.->|"Wi-Fi Visiteur MINPOSTEL"| SWITCH_LAN
+    end
+
+    %% CLOUD EXTERNE
+    subgraph CLOUD_EXTERNE ["☁️ SERVICES CLOUD & INFRASTRUCTURE DISTANTE"]
+        CF_EDGE["🌐 Réseau Anycast Cloudflare<br/>(Passerelle HTTPS sécurisée trycloudflare.com)"]
+        SUPABASE_CLOUD[("🐘 Supabase / PostgreSQL Cloud<br/>(Base distante & Synchronisation)")]
+        WEATHER_API["☀️ Service Météo (API Météo Yaoundé)"]
+    end
+
+    CF_DAEMON ==>|"Tunnel Chiffré TLS Sortant (Port 443)"| CF_EDGE
+    CF_EDGE ==>|"Accès 4G/5G hors Wi-Fi"| SMARTPHONES
+    APP_SRV -.->|"Pooling HTTPS"| SUPABASE_CLOUD
+    APP_SRV -.->|"Requêtes API Météo"| WEATHER_API
+
+    classDef screenStyle fill:#0F172A,stroke:#38BDF8,stroke-width:3px,color:#F8FAFC;
+    classDef srvStyle fill:#312E81,stroke:#818CF8,stroke-width:2px,color:#EEF2FF;
+    classDef mobileStyle fill:#064E3B,stroke:#34D399,stroke-width:2px,color:#ECFDF5;
+    classDef cloudStyle fill:#701A75,stroke:#F472B6,stroke-width:2px,color:#FDF2F8;
+
+    class TV_SCREEN screenStyle;
+    class APP_SRV,APP_CLIENT,DB_LOCAL,STORAGE_LOCAL,CF_DAEMON srvStyle;
+    class SMARTPHONES,PC_ADMIN mobileStyle;
+    class CF_EDGE,SUPABASE_CLOUD,WEATHER_API cloudStyle;

@@ -1,0 +1,44 @@
+%% =========================================================================
+%% MINPOSTEL SMART DISPLAY (MSD) - DIAGRAM 01: PROBLEM & SOLUTION CONTEXT
+%% Description: Visual comparison between traditional manual information
+%%              dissemination at MINPOSTEL and the proposed MSD solution.
+%% =========================================================================
+
+flowchart TB
+    subgraph PROBLEM_SPACE ["🔴 ÉTAT DES LIEUX & PROBLÉMATIQUE ACTUELLE (MINPOSTEL)"]
+        direction TB
+        P1["📄 Affichage Papier & Panneaux Liège<br/>(Notes de service collées, statiques, obsolètes)"]
+        P2["🚶‍♂️ Visiteurs et Usagers Désorientés<br/>(Recherche difficile des salles, étages et réunions)"]
+        P3["⏱️ Délais Critiques de Diffusion<br/>(Impossibilité de relayer une urgence ministérielle en temps réel)"]
+        P4["⚠️ Surcharge du Poste de Garde / Accueil<br/>(Demandes répétitives d'orientation physique)"]
+        P5["🌐 Rupture Numérique Mobile<br/>(Aucun transfert d'information vers le smartphone du visiteur)"]
+        
+        P1 --> P2
+        P3 --> P4
+        P2 --> P5
+    end
+
+    subgraph MSD_SOLUTION ["🟢 SOLUTION PROPOSÉE : MINPOSTEL SMART DISPLAY (MSD)"]
+        direction TB
+        S1["🖥️ Écran Dynamique Kiosque Entrée Principale<br/>(Diffusion automatique 16:9, météo Yaoundé, heure, flux)"]
+        S2["⚡ Diffusion Instantanée par WebSockets<br/>(Mise à jour en direct < 1 seconde via Socket.IO)"]
+        S3["🚨 Bandeau d'Alerte Ministérielle Prioritaire<br/>(Interruption instantanée du flux normal en cas d'urgence)"]
+        S4["📱 Passerelle QR Code & Guide Mobile<br/>(Orientation dans le bâtiment sans installer d'application)"]
+        S5["🌐 Bilinguisme Institutionnel Automatique<br/>(Alternance synchronisée Français / Anglais conforme aux normes)"]
+        S6["📊 Surveillance Matérielle & Heartbeat<br/>(Monitoring de santé des écrans et gestion éco-énergie)"]
+
+        S1 --- S2
+        S2 --- S3
+        S1 --- S4
+        S4 --- S5
+        S3 --- S6
+    end
+
+    PROBLEM_SPACE ==>|"TRANSFORMATION DIGITALE & MODERNISATION"| MSD_SOLUTION
+
+    classDef probStyle fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#991B1B,rx:8px,ry:8px;
+    classDef solStyle fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#166534,rx:8px,ry:8px;
+    classDef titleStyle fill:#EFF6FF,stroke:#2563EB,stroke-width:2px,color:#1E40AF;
+
+    class P1,P2,P3,P4,P5 probStyle;
+    class S1,S2,S3,S4,S5,S6 solStyle;

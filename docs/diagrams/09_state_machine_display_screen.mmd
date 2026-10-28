@@ -1,0 +1,52 @@
+%% =========================================================================
+%% MINPOSTEL SMART DISPLAY (MSD) - DIAGRAM 09: STATE MACHINE - DISPLAY SCREEN
+%% Description: State Machine Diagram modeling the lifecycle, operating modes,
+%%              power management, and emergency states of the smart display.
+%% =========================================================================
+
+stateDiagram-v2
+    [*] --> NON_INITIALISE : Démarrage matériel / Écran branché
+
+    state NON_INITIALISE {
+        [*] --> ChargementApp : Chargement SPA React
+        ChargementApp --> RequeteFlux : Appel GET /api/feed/display
+        RequeteFlux --> EnregistrementSocket : Émission DISPLAY_REGISTER
+    }
+
+    NON_INITIALISE --> CARROUSEL_ACTIF : Initialisation réussie (Status 200)
+    NON_INITIALISE --> HORS_LIGNE : Échec réseau / Serveur inaccessible
+
+    state CARROUSEL_ACTIF {
+        [*] --> DiapositiveNormale
+        DiapositiveNormale --> DiapositiveSuivante : Expiration durée diapo (10-20s)
+        DiapositiveSuivante --> BasculeLangue : Fin du tour de playlist (index == 0)
+        BasculeLangue --> DiapositiveNormale : Nouvelle langue (FR ⟷ EN)
+        --
+        [*] --> EmissionHeartbeat : Toutes les 15s
+        EmissionHeartbeat --> EmissionHeartbeat : Envoi ping Socket.IO
+    }
+
+    CARROUSEL_ACTIF --> ALERTE_URGENTE : Événement Socket URGENT_MESSAGE_BROADCAST
+    ALERTE_URGENTE --> CARROUSEL_ACTIF : Événement Socket URGENT_MESSAGE_STOPPED
+
+    state ALERTE_URGENTE {
+        [*] --> GelCarrousel : Mise en pause du flux normal
+        GelCarrousel --> AffichageBandeauRouge : Bannière plein écran clignotante
+        AffichageBandeauRouge --> AlerteSonore : Émission du bip audio d'attention
+    }
+
+    CARROUSEL_ACTIF --> VEILLE_ECO : Commande POWER_OFF ou Heure >= 18h00
+    VEILLE_ECO --> CARROUSEL_ACTIF : Commande POWER_ON ou Heure >= 07h00
+
+    state VEILLE_ECO {
+        [*] --> EcranNoir : Rendu 100% noir (Préservation dalle)
+        EcranNoir --> MaintienHeartbeat : Surveillance réseau toujours active
+    }
+
+    CARROUSEL_ACTIF --> HORS_LIGNE : Perte connexion réseau (>45s)
+    HORS_LIGNE --> CARROUSEL_ACTIF : Rétablissement du lien Socket / Reconnect
+
+    state HORS_LIGNE {
+        [*] --> CacheLocal : Affichage du dernier flux mémorisé
+        CacheLocal --> TentativeReconnexion : Reconnexion automatique en boucle
+    }

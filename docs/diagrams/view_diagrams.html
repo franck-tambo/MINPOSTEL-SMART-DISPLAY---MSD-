@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MINPOSTEL Smart Display (MSD) - Dossier d'Architecture & Diagrammes</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0B2545;
+      --primary-light: #134074;
+      --accent: #D4AF37;
+      --bg: #0F172A;
+      --surface: #1E293B;
+      --surface-border: #334155;
+      --text: #F8FAFC;
+      --text-muted: #94A3B8;
+      --sidebar-width: 320px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--surface);
+      border-right: 1px solid var(--surface-border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .sidebar-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--surface-border);
+      background: linear-gradient(135deg, rgba(11,37,69,0.8), rgba(19,64,116,0.5));
+    }
+    .flag-bar {
+      display: flex;
+      height: 4px;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+    .flag-green { flex: 1; background-color: #007A3D; }
+    .flag-red { flex: 1; background-color: #CE1126; }
+    .flag-yellow { flex: 1; background-color: #FCD116; }
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #FFF;
+      letter-spacing: -0.02em;
+    }
+    .brand-sub {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+    .nav-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.75rem;
+    }
+    .nav-group-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      font-weight: 700;
+      padding: 0.75rem 0.5rem 0.35rem 0.5rem;
+    }
+    .nav-btn {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text);
+      padding: 0.65rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.25rem;
+      transition: all 0.15s ease;
+    }
+    .nav-btn:hover {
+      background-color: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.1);
+    }
+    .nav-btn.active {
+      background: linear-gradient(135deg, #134074, #0B2545);
+      border-color: var(--accent);
+      color: #FFF;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(11,37,69,0.5);
+    }
+    .nav-btn span.badge-num {
+      background: rgba(255,255,255,0.12);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* MAIN CONTENT */
+    .main-view {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background-color: #0B132B;
+    }
+    .top-bar {
+      height: 64px;
+      background-color: var(--surface);
+      border-bottom: 1px solid var(--surface-border);
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .top-bar h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .top-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .btn-action {
+      background-color: var(--surface);
+      border: 1px solid var(--surface-border);
+      color: var(--text);
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+    .btn-action:hover {
+      background-color: var(--primary-light);
+      border-color: var(--accent);
+      color: #FFF;
+    }
+
+    .canvas-container {
+      flex: 1;
+      overflow: auto;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .diagram-card {
+      background-color: #FFFFFF;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+      min-width: 90%;
+      max-width: 1400px;
+      margin-bottom: 2rem;
+    }
+    .diagram-card.dark-theme {
+      background-color: #1E293B;
+    }
+    .diagram-desc {
+      background-color: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-top: 1.5rem;
+      width: 100%;
+      max-width: 1400px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+    .diagram-desc strong {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="flag-bar">
+        <div class="flag-green"></div>
+        <div class="flag-red"></div>
+        <div class="flag-yellow"></div>
+      </div>
+      <div class="brand-title">MINPOSTEL Smart Display</div>
+      <div class="brand-sub">Dossier d'Architecture Logicielle</div>
+    </div>
+
+    <nav class="nav-list">
+      <div class="nav-group-title">1. CADRAGE & BESOINS</div>
+      <button class="nav-btn active" onclick="loadDiagram(1)">
+        <span class="badge-num">01</span>
+        <span>Problématique & Solution</span>
+      </button>
+      <button class="nav-btn" onclick="loadDiagram(2)">
+        <span class="badge-num">02</span>
+        <span>Cas d'Utilisation (UML)</span>
+      </button>
+
+      <div class="nav-group-title">2. ARCHITECTURE LOGICIELLE</div>
+      <button class="nav-btn" onclick="loadDiagram(3)">
+        <span class="badge-num">03</span>
+        <span>Architecture Système (C4)</span>
+      </button>
+      <button class="nav-btn" onclick="loadDiagram(4)">
+        <span class="badge-num">04</span>
+        <span>Modèle Entité-Association (BDD)</span>
+      </button>
+
+      <div class="nav-group-title">3. DIAGRAMMES DE SÉQUENCE (TEMPS RÉEL)</div>
+      <button class="nav-btn" onclick="loadDiagram(5)">
+        <span class="badge-num">05</span>
+        <span>Alerte Ministérielle d'Urgence</span>
+      </button>
+      <button class="nav-btn" onclick="loadDiagram(6)">
+        <span class="badge-num">06</span>
+        <span>Carrousel & Bilinguisme</span>
+      </button>
+      <button class="nav-btn" onclick="loadDiagram(7)">
+        <span class="badge-num">07</span>
+        <span>Guidage Visiteur par QR Code</span>
+      </button>
+      <button class="nav-btn" onclick="loadDiagram(8)">
+        <span class="badge-num">08</span>
+        <span>Surveillance Heartbeat Écran</span>
+      </button>
+
+      <div class="nav-group-title">4. DYNAMIQUES & DÉPLOIEMENT</div>
+      <button class="nav-btn" onclick="loadDiagram(9)">
+        <span class="badge-num">09</span>
+        <span>Machine d'États (Écran Kiosque)</span>
+      </button>
+      <button class="nav-btn" onclick="loadDiagram(10)">
+        <span class="badge-num">10</span>
+        <span>Cycle de Vie des Contenus</span>
+      </button>
+      <button class="nav-btn" onclick="loadDiagram(11)">
+        <span class="badge-num">11</span>
+        <span>Déploiement Physique & Réseau</span>
+      </button>
+    </nav>
+  </aside>
+
+  <!-- MAIN VIEWPORT -->
+  <main class="main-view">
+    <header class="top-bar">
+      <h2 id="diagram-title">01. Problématique & Solution Proposée</h2>
+      <div class="top-actions">
+        <button class="btn-action" onclick="window.print()">🖨️ Imprimer / Exporter PDF</button>
+        <button class="btn-action" onclick="toggleTheme()">🌓 Alterner Fond</button>
+      </div>
+    </header>
+
+    <div class="canvas-container">
+      <div class="diagram-card" id="diagram-render-target">
+        <div class="mermaid" id="mermaid-code"></div>
+      </div>
+      <div class="diagram-desc" id="diagram-explanation"></div>
+    </div>
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+      er: { useMaxWidth: true },
+      sequence: { useMaxWidth: true, showSequenceNumbers: true }
+    });
+
+    const diagramsData = {
+      1: {
+        title: "01. Contexte, Problématique & Solution Proposée",
+        file: "01_problem_solution_context.mmd",
+        desc: "<strong>Objectif de présentation au tuteur :</strong> Ce schéma illustre la rupture entre l'ancien affichage papier statique au MINPOSTEL (retards, perte de temps, surcharge de l'accueil) et la modernisation apportée par MINPOSTEL Smart Display (diffusion temps réel WebSockets, orientation usagers par QR codes, et bilinguisme automatique)."
+      },
+      2: {
+        title: "02. Diagramme des Cas d'Utilisation (UML)",
+        file: "02_use_case_diagram.mmd",
+        desc: "<strong>Objectif de présentation au tuteur :</strong> Présente les 4 acteurs identifiés (Super Admin, Gestionnaire de Contenu, Usagers/Visiteurs, et Écran Kiosque autonome) ainsi que l'ensemble des fonctionnalités regroupées par paquets métier (Sécurité, Éditorial, Alertes de Crise, Infrastructure, et Orientation Mobile)."
+      },
+      3: {
+        title: "03. Architecture Globale du Système (Modèle C4 Container)",
+        file: "03_system_architecture_c4.mmd",
+        desc: "<strong>Objectif de présentation au tuteur :</strong> Découpage en 4 couches techniques : Présentation React 18 (Dashboard, Kiosque, Webapp mobile), Passerelle réseau (LAN Wi-Fi + Tunnel Cloudflare), Application Node.js/Express (API REST + Socket.IO + Daemons d'arrière-plan), et Persistance multi-moteurs (Supabase PostgreSQL, MySQL et store JSON de secours)."
+      },
+      4: {
+        title: "04. Modèle Entité-Association (ERD BDD Relationnelle)",
+        file: "04_entity_relationship_diagram.mmd",
+        desc: "<strong>Objectif de présentation au tuteur :</strong> Schéma relationnel complet conforme aux spécifications SQL. Modélise la hiérarchie spatiale (Bâtiments ➔ Étages ➔ Salles), la gouvernance des utilisateurs et rôles, la médiathèque, les entités d'affichage (annonces, réunions, événements, communications, urgences) et les journaux d'audit."
+      },
+      5: {
+        title: "05. Diagramme de Séquence : Alerte Ministérielle de Crise",
+        file: "05_sequence_urgent_broadcast.mmd",
+        desc: "<strong>Objectif de présentation au tuteur :</strong> Démontre la réactivité en temps réel du système lors d'un événement critique : déclenchement par le Super Admin, propagation par WebSocket (<50ms), gel du carrousel de l'écran, signal sonore, affichage plein écran rouge, et reprise fluide après cessation de l'urgence."
+      },
+      6: {
+        title: "06. Diagramme de Séquence : Carrousel & Alternance Bilingue",
+        file: "06_sequence_playlist_and_language.mmd",
+        desc: "<strong>Objectif de présentation au tuteur :</strong> Montre le fonctionnement dynamique de l'écran sans intervention humaine : rotation automatique minutée, permutation automatique Français / Anglais à chaque tour complet, et injection d'éléments créés à chaud sans rechargement de page."
+      },
+      7: {
+        title: "07. Diagramme de Séquence : Guidage Visiteur par QR Code",
+        file: "07_sequence_visitor_qr_navigation.mmd",
+        desc: "<strong>Objectif de présentation au tuteur :</strong> Met en valeur l'expérience usager 'Zero-Install' : le visiteur scanne l'écran dans le hall avec son smartphone (Wi-Fi ou 4G/5G) et consulte immédiatement le chemin d'accès précis jusqu'à la salle de réunion ministérielle."
+      },
+      8: {
+        title: "08. Diagramme de Séquence : Surveillance Heartbeat de l'Écran",
+        file: "08_sequence_display_heartbeat.mmd",
+        desc: "<strong>Objectif de présentation au tuteur :</strong> Explique le protocole de tolérance aux pannes : émission de pulsations toutes les 15 secondes par l'écran physique, balayage automatique du serveur, et passage au statut HORS LIGNE (alerte rouge DSI) si aucun signal n'est reçu après 45 secondes."
+      },
+      9: {
+        title: "09. Machine à États : Cycle de Vie de l'Écran Kiosque",
+        file: "09_state_machine_display_screen.mmd",
+        desc: "<strong>Objectif de présentation au tuteur :</strong> Modélise les différents états opérationnels de l'écran : Non initialisé, Carrousel normal, Alerte d'urgence prioritaire, Veille écologique nocturne (préservation dalle 18h-07h), et Mode déconnecté avec cache local."
+      },
+      10: {
+        title: "10. Machine à États : Cycle de Vie des Contenus",
+        file: "10_state_machine_content_lifecycle.mmd",
+        desc: "<strong>Objectif de présentation au tuteur :</strong> Cycle complet d'une information ministérielle depuis la rédaction bilingue (Brouillon), la planification calendaire (Programmé), la diffusion en direct (Publié / En cours) jusqu'à l'expiration automatique et l'archivage."
+      },
+      11: {
+        title: "11. Architecture de Déploiement Physique & Réseau",
+        file: "11_physical_deployment_diagram.mmd",
+        desc: "<strong>Objectif de présentation au tuteur :</strong> Schéma d'implantation physique au sein du MINPOSTEL : Écran Smart TV 65'' dans le hall d'entrée, Poste de travail de la cellule communication, Serveur d'application hôte, commutateurs LAN, et passerelle Cloudflare pour la mobilité 4G/5G."
+      }
+    };
+
+    let currentDiagramId = 1;
+
+    async function loadDiagram(id) {
+      currentDiagramId = id;
+      const data = diagramsData[id];
+      if (!data) return;
+
+      // Update sidebar active buttons
+      document.querySelectorAll('.nav-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', (idx + 1) === id);
+      });
+
+      // Update header and description
+      document.getElementById('diagram-title').innerText = data.title;
+      document.getElementById('diagram-explanation').innerHTML = data.desc;
+
+      // Fetch diagram source code
+      try {
+        const response = await fetch(data.file);
+        if (!response.ok) throw new Error("Impossible de charger " + data.file);
+        const code = await response.text();
+
+        const renderTarget = document.getElementById('diagram-render-target');
+        renderTarget.innerHTML = '<div class="mermaid">' + code + '</div>';
+        mermaid.run();
+      } catch (err) {
+        document.getElementById('diagram-render-target').innerHTML = 
+          '<div style="color:#DC2626; padding:2rem; font-family:monospace;">Erreur de chargement: ' + err.message + '</div>';
+      }
+    }
+
+    function toggleTheme() {
+      const card = document.getElementById('diagram-render-target');
+      card.classList.toggle('dark-theme');
+    }
+
+    // Initial load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadDiagram(1);
+    });
+  </script>
+</body>
+</html>

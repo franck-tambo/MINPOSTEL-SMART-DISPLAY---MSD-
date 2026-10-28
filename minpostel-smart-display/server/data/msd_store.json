@@ -1,0 +1,457 @@
+{
+  "announcements": [
+    {
+      "id": 1792579558467,
+      "title_fr": "forum national sur la cybersecurite",
+      "title_en": "truytguyhiufuygg",
+      "description_fr": "Sensibilisation sur la cybersecurite",
+      "description_en": "sfsagrsfsbfbfd",
+      "priority": "NORMAL",
+      "status": "PUBLISHED",
+      "start_date": "2026-10-21",
+      "end_date": "2026-11-20",
+      "media_url": "/uploads/f2281019820088a205988284de7046e9.jpg",
+      "card_color": "#134074",
+      "created_by": 1
+    },
+    {
+      "id": 1,
+      "title_fr": "Digitalisation des Services Postaux",
+      "title_en": "Digitalization of Postal Services",
+      "description_fr": "Le Ministère des Postes et Télécommunications informe le public du déploiement de nouveaux guichets numériques pour l'affranchissement.",
+      "description_en": "The Ministry of Posts and Telecommunications informs visitors of the deployment of new digital counters.",
+      "priority": "IMPORTANT",
+      "status": "PUBLISHED",
+      "start_date": "2026-09-10",
+      "end_date": "2026-10-10",
+      "author_name": "Administrateur Principal"
+    }
+  ],
+  "meetings": [
+    {
+      "id": 1792588117341,
+      "title_fr": "asdvSVDsvdZdvADSVCASdVC",
+      "title_en": "vSDVasdbvcxvadsvadsv",
+      "description_fr": "svdavsvdZDXVDVadsvsv",
+      "description_en": "ZDVBSFsddfbdfvcdb",
+      "date": "2026-10-21",
+      "start_time": "14:00",
+      "end_time": "16:00",
+      "room_id": "2",
+      "participants_info": "",
+      "priority": "IMPORTANT",
+      "status": "UPCOMING",
+      "media_url": "",
+      "card_color": "#134074",
+      "created_by": 1,
+      "building_fr": "Bâtiment Principal",
+      "floor_fr": "2e Étage",
+      "room_fr": "Salle de Conférence B"
+    },
+    {
+      "id": 1792588083826,
+      "title_fr": "ewgvwravdv",
+      "title_en": "adsvasdvsdv",
+      "description_fr": "sdfbadfbdads",
+      "description_en": "sdvdaVDSASDdv",
+      "date": "2026-10-21",
+      "start_time": "14:00",
+      "end_time": "16:00",
+      "room_id": "2",
+      "participants_info": "",
+      "priority": "URGENT",
+      "status": "UPCOMING",
+      "media_url": "",
+      "card_color": "#991B1B",
+      "created_by": 1,
+      "building_fr": "Bâtiment Principal",
+      "floor_fr": "2e Étage",
+      "room_fr": "Salle de Conférence B"
+    },
+    {
+      "id": 1791548573992,
+      "title_fr": "Runion sur L'education",
+      "title_en": "meeting on education",
+      "description_fr": "comment gerer les etudiants",
+      "description_en": "how to manage students",
+      "date": "2026-10-09",
+      "start_time": "14:00",
+      "end_time": "16:00",
+      "room_id": "2",
+      "participants_info": "Everyone",
+      "priority": "IMPORTANT",
+      "status": "UPCOMING",
+      "media_url": "/uploads/b722239bd59209da87c0d9340b2a7b2b.webp",
+      "card_color": "#2563EB",
+      "created_by": 1,
+      "building_fr": "Bâtiment Principal",
+      "floor_fr": "2e Étage",
+      "room_fr": "Salle de Conférence B"
+    },
+    {
+      "id": 1,
+      "title_fr": "Réunion de Coordination du Cabinet",
+      "title_en": "Cabinet Coordination Meeting",
+      "description_fr": "Examen des projets prioritaires du secteur des télécommunications.",
+      "description_en": "Review of priority projects in the telecommunications sector.",
+      "date": "2026-09-28",
+      "start_time": "14:00",
+      "end_time": "16:00",
+      "building_fr": "Bâtiment Principal",
+      "building_en": "Main Building",
+      "floor_fr": "2e Étage",
+      "floor_en": "2nd Floor",
+      "room_fr": "Salle de Conférence B",
+      "room_en": "Conference Room B",
+      "participants_info": "Membres du Cabinet & Directeurs Centraux",
+      "priority": "URGENT",
+      "status": "COMPLETED",
+      "is_published": 1
+    }
+  ],
+  "events": [
+    {
+      "id": 1,
+      "title_fr": "Atelier National sur la Cybersécurité",
+      "title_en": "National Cybersecurity Workshop",
+      "description_fr": "Renforcement des capacités des administrations publiques.",
+      "description_en": "Capacity building for public administration IT staff.",
+      "date": "2026-09-28",
+      "start_time": "09:00",
+      "end_time": "12:00",
+      "building_fr": "Bâtiment Principal",
+      "building_en": "Main Building",
+      "floor_fr": "RDC",
+      "floor_en": "Ground Floor",
+      "room_fr": "Salle Polyvalente",
+      "room_en": "Multipurpose Room",
+      "organizer": "Division de la Sécurité des Réseaux",
+      "target_audience": "Points Focaux SI",
+      "priority": "IMPORTANT",
+      "status": "SCHEDULED",
+      "is_published": 1
+    }
+  ],
+  "communications": [
+    {
+      "id": 1792593980546,
+      "title_fr": "agarhrh",
+      "title_en": "aRHr",
+      "content_fr": "arhtjrfrhabr",
+      "content_en": "aqtgrfrgf",
+      "priority": "URGENT",
+      "visibility": "PUBLIC",
+      "status": "PUBLISHED",
+      "start_date": "2026-10-21",
+      "end_date": "2026-11-20",
+      "media_url": "",
+      "card_color": "#134074",
+      "created_by": 1
+    },
+    {
+      "id": 1,
+      "title_fr": "Lancement du Portail National des Télécommunications",
+      "title_en": "Launch of the National Telecommunications Portal",
+      "description_fr": "Madame la Ministre des Postes et Télécommunications a présidé ce jour la cérémonie officielle de mise en service du nouveau portail national.",
+      "description_en": "The Minister of Posts and Telecommunications chaired today the official commissioning ceremony of the new national portal.",
+      "date": "2026-09-28",
+      "publisher": "Cellule de Communication",
+      "priority": "IMPORTANT",
+      "status": "PUBLISHED",
+      "is_published": 1
+    }
+  ],
+  "urgentMessages": [
+    {
+      "id": 1792597776807,
+      "message_fr": "COURS",
+      "message_en": "RUN",
+      "priority": "CRITICAL",
+      "status": "INACTIVE",
+      "start_time": "2026-10-21T15:49:36.807Z",
+      "broadcasted_at": "2026-10-21T15:49:36.807Z",
+      "stopped_at": "2026-10-21T15:50:58.129Z",
+      "broadcast_history": [
+        {
+          "broadcasted_at": "2026-10-21T15:49:36.807Z",
+          "stopped_at": "2026-10-21T15:50:58.129Z",
+          "duration_seconds": 81
+        }
+      ],
+      "end_time": "2026-10-21T17:49:36.807Z"
+    },
+    {
+      "id": 1792597131203,
+      "message_fr": "Alerte de test MINPOSTEL",
+      "message_en": "MINPOSTEL test alert",
+      "priority": "CRITICAL",
+      "status": "INACTIVE",
+      "start_time": "2026-10-21T15:51:07.564Z",
+      "broadcasted_at": "2026-10-21T15:51:07.564Z",
+      "stopped_at": "2026-10-21T15:51:23.690Z",
+      "broadcast_history": [
+        {
+          "broadcasted_at": "2026-10-21T15:38:51.203Z",
+          "stopped_at": "2026-10-21T15:45:20.000Z",
+          "duration_seconds": 389
+        },
+        {
+          "broadcasted_at": "2026-10-21T15:51:07.564Z",
+          "stopped_at": "2026-10-21T15:51:23.690Z",
+          "duration_seconds": 16
+        }
+      ],
+      "end_time": "2026-10-21T17:38:51.203Z"
+    }
+  ],
+  "settings": {
+    "app_title": "MINPOSTEL Smart Display",
+    "default_language": "FR",
+    "rotation_duration_seconds": 20,
+    "language_cycle_seconds": 10,
+    "heartbeat_interval_seconds": 20,
+    "display_code": "MINPOSTEL-MAIN-ENTRANCE-01",
+    "theme_color": "#134074",
+    "background_url": "",
+    "power_on_time": "07:00",
+    "power_off_time": "17:00",
+    "public_base_url": "https://surrey-landscape-bumper-meetings.trycloudflare.com"
+  },
+  "locations": {
+    "buildings": [
+      {
+        "id": 1,
+        "code": "MAIN_BLDG",
+        "name_fr": "Bâtiment Principal",
+        "name_en": "Main Building"
+      },
+      {
+        "id": 2,
+        "code": "ANNEX_BLDG",
+        "name_fr": "Bâtiment Annexe A",
+        "name_en": "Annex Building A"
+      }
+    ],
+    "floors": [
+      {
+        "id": 1,
+        "building_id": 1,
+        "floor_number": 0,
+        "name_fr": "Rez-de-Chaussée",
+        "name_en": "Ground Floor"
+      },
+      {
+        "id": 2,
+        "building_id": 1,
+        "floor_number": 1,
+        "name_fr": "1er Étage",
+        "name_en": "1st Floor"
+      },
+      {
+        "id": 3,
+        "building_id": 1,
+        "floor_number": 2,
+        "name_fr": "2e Étage",
+        "name_en": "2nd Floor"
+      },
+      {
+        "id": 4,
+        "building_id": 1,
+        "floor_number": 3,
+        "name_fr": "3e Étage",
+        "name_en": "3rd Floor"
+      },
+      {
+        "id": 5,
+        "building_id": 2,
+        "floor_number": 0,
+        "name_fr": "Rez-de-Chaussée Annexe",
+        "name_en": "Annex Ground Floor"
+      }
+    ],
+    "rooms": [
+      {
+        "id": 1,
+        "floor_id": 1,
+        "room_number": "RDC-01",
+        "name_fr": "Hall d'Accueil / Réception",
+        "name_en": "Main Reception & Welcome Hall",
+        "capacity": 50,
+        "type": "HALL"
+      },
+      {
+        "id": 2,
+        "floor_id": 1,
+        "room_number": "RDC-CONF",
+        "name_fr": "Salle de Conférence RDC",
+        "name_en": "Ground Floor Conference Hall",
+        "capacity": 120,
+        "type": "CONFERENCE"
+      },
+      {
+        "id": 3,
+        "floor_id": 2,
+        "room_number": "AUDIT-A",
+        "name_fr": "Grand Amphithéâtre des Télécoms",
+        "name_en": "Main Telecom Auditorium",
+        "capacity": 250,
+        "type": "AUDITORIUM"
+      },
+      {
+        "id": 4,
+        "floor_id": 2,
+        "room_number": "SALLE-102",
+        "name_fr": "Salle des Commissions Numériques",
+        "name_en": "Digital Commission Meeting Room",
+        "capacity": 35,
+        "type": "MEETING"
+      },
+      {
+        "id": 5,
+        "floor_id": 3,
+        "room_number": "CONF-B",
+        "name_fr": "Salle de Conférence B",
+        "name_en": "Conference Room B",
+        "capacity": 80,
+        "type": "CONFERENCE"
+      },
+      {
+        "id": 6,
+        "floor_id": 3,
+        "room_number": "CABINET-01",
+        "name_fr": "Salle de Réunion du Cabinet",
+        "name_en": "Cabinet Meeting Room",
+        "capacity": 30,
+        "type": "MEETING"
+      },
+      {
+        "id": 7,
+        "floor_id": 4,
+        "room_number": "DIR-401",
+        "name_fr": "Salle de Presse & Média",
+        "name_en": "Press & Media Briefing Room",
+        "capacity": 45,
+        "type": "MEETING"
+      },
+      {
+        "id": 8,
+        "floor_id": 5,
+        "room_number": "ANNEX-H01",
+        "name_fr": "Hall Polyvalent Annexe",
+        "name_en": "Annex Multi-purpose Hall",
+        "capacity": 70,
+        "type": "HALL"
+      }
+    ]
+  },
+  "logs": [
+    {
+      "id": 1793203370468,
+      "action": "LOGIN",
+      "entity_type": "USER",
+      "description": "Connexion réussie au panneau d'administration (Administrateur Principal MINPOSTEL)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-28T16:02:49.985Z"
+    },
+    {
+      "id": 1793183564098,
+      "action": "LOGIN",
+      "entity_type": "USER",
+      "description": "Connexion réussie au panneau d'administration (Administrateur Principal MINPOSTEL)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-28T10:32:43.704Z"
+    },
+    {
+      "id": 1792770969173,
+      "action": "LOGIN",
+      "entity_type": "USER",
+      "description": "Connexion réussie au panneau d'administration (Administrateur Principal MINPOSTEL)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-23T15:56:09.126Z"
+    },
+    {
+      "id": 1792667065514,
+      "action": "LOGIN",
+      "entity_type": "USER",
+      "description": "Connexion réussie au panneau d'administration (Administrateur Principal MINPOSTEL)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-22T11:04:24.736Z"
+    },
+    {
+      "id": 1792608748796,
+      "action": "LOGIN",
+      "entity_type": "USER",
+      "description": "Connexion réussie au panneau d'administration (Administrateur Principal MINPOSTEL)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-21T18:52:28.543Z"
+    },
+    {
+      "id": 1792603929589,
+      "action": "LOGIN",
+      "entity_type": "USER",
+      "description": "Connexion réussie au panneau d'administration (Administrateur Principal MINPOSTEL)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-21T17:32:08.652Z"
+    },
+    {
+      "id": 1792602741933,
+      "action": "LOGIN",
+      "entity_type": "USER",
+      "description": "Connexion réussie au panneau d'administration (Administrateur Principal MINPOSTEL)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-21T17:12:21.792Z"
+    },
+    {
+      "id": 1792599470011,
+      "action": "LOGIN",
+      "entity_type": "USER",
+      "description": "Connexion réussie au panneau d'administration (Administrateur Principal MINPOSTEL)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-21T16:17:49.907Z"
+    },
+    {
+      "id": 1792599454627,
+      "action": "FAILED_LOGIN",
+      "entity_type": "SECURITY",
+      "description": "Tentative de connexion échouée avec l'identifiant: \"admin\"",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-21T16:17:34.028Z"
+    },
+    {
+      "id": 1792600000001,
+      "action": "LOGIN",
+      "entity_type": "USER",
+      "description": "Connexion de l'administrateur Principal (admin)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-21T15:16:39.425Z"
+    },
+    {
+      "id": 1792600000002,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (durée des diapositives et intervalle de pulsation)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-21T15:46:39.425Z"
+    },
+    {
+      "id": 1792600000003,
+      "action": "UPDATE",
+      "entity_type": "BUILDINGS",
+      "description": "Synchronisation et structuration de la nomenclature des bâtiments ministériels",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-21T16:01:39.425Z"
+    }
+  ]
+}

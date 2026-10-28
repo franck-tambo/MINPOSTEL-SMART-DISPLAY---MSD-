@@ -1,0 +1,12 @@
+{
+  "name": "minpostel-smart-display-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix minpostel-smart-display/server run dev",
+    "dev:server": "npm --prefix minpostel-smart-display/server run dev",
+    "dev:client": "npm --prefix minpostel-smart-display/client run dev",
+    "start:server": "npm --prefix minpostel-smart-display/server start",
+    "install:all": "npm install --prefix minpostel-smart-display/server && npm install --prefix minpostel-smart-display/client"
+  }
+}

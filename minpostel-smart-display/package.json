@@ -1,0 +1,35 @@
+{
+  "name": "minpostel-smart-display",
+  "version": "1.0.0",
+  "description": "Système intelligent de gestion et d'affichage dynamique des informations - MINPOSTEL",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "start:server": "npm --prefix server start",
+    "start:client": "npm --prefix client run build && npm --prefix client run preview",
+    "install:all": "npm install --prefix server && npm install --prefix client"
+  },
+  "keywords": [
+    "digital-signage",
+    "minpostel",
+    "smart-display",
+    "react",
+    "nodejs",
+    "express",
+    "socket.io",
+    "mysql"
+  ],
+  "author": "MINPOSTEL Development Team",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^2.3.0",
+    "express": "^5.2.1",
+    "iconv-lite": "^0.7.3",
+    "raw-body": "^4.0.0"
+  }
+}

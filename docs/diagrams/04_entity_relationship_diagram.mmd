@@ -1,0 +1,207 @@
+%% =========================================================================
+%% MINPOSTEL SMART DISPLAY (MSD) - DIAGRAM 04: ENTITY-RELATIONSHIP DIAGRAM (ERD)
+%% Description: Complete relational schema matching database/schema.sql with
+%%              cardinalities, primary keys, foreign keys, and attribute types.
+%% =========================================================================
+
+erDiagram
+    ROLES ||--o{ USERS : "attribue à (1:N)"
+    USERS ||--o{ MEDIA : "téléverse (1:N)"
+    USERS ||--o{ ANNOUNCEMENTS : "crée (1:N)"
+    USERS ||--o{ MEETINGS : "planifie (1:N)"
+    USERS ||--o{ EVENTS : "organise (1:N)"
+    USERS ||--o{ STAFF_COMMUNICATIONS : "rédige (1:N)"
+    USERS ||--o{ URGENT_MESSAGES : "diffuse (1:N)"
+    USERS ||--o{ ACTIVITY_LOGS : "génère (1:N)"
+
+    BUILDINGS ||--o{ FLOORS : "comporte (1:N)"
+    FLOORS ||--o{ ROOMS : "contient (1:N)"
+
+    BUILDINGS ||--o{ MEETINGS : "héberge (1:N)"
+    FLOORS ||--o{ MEETINGS : "situe (1:N)"
+    ROOMS ||--o{ MEETINGS : "abrite (1:N)"
+
+    BUILDINGS ||--o{ EVENTS : "accueille (1:N)"
+    FLOORS ||--o{ EVENTS : "situe (1:N)"
+    ROOMS ||--o{ EVENTS : "abrite (1:N)"
+
+    MEDIA ||--o{ ANNOUNCEMENTS : "illustre (0:N)"
+    MEDIA ||--o{ MEETINGS : "illustre (0:N)"
+    MEDIA ||--o{ EVENTS : "illustre (0:N)"
+    MEDIA ||--o{ STAFF_COMMUNICATIONS : "illustre (0:N)"
+    MEDIA ||--o{ URGENT_MESSAGES : "illustre (0:N)"
+
+    ROLES {
+        int id PK
+        varchar name UK "SUPER_ADMIN, CONTENT_MANAGER"
+        varchar description
+        timestamp created_at
+    }
+
+    USERS {
+        int id PK
+        int role_id FK
+        varchar username UK
+        varchar email UK
+        varchar password_hash
+        varchar full_name
+        boolean is_active
+        timestamp last_login
+        timestamp created_at
+    }
+
+    BUILDINGS {
+        int id PK
+        varchar code UK "MAIN_BLDG, ANNEX_BLDG"
+        varchar name_fr
+        varchar name_en
+        timestamp created_at
+    }
+
+    FLOORS {
+        int id PK
+        int building_id FK
+        int floor_number "0=RDC, 1=1er, 2=2e"
+        varchar name_fr
+        varchar name_en
+        timestamp created_at
+    }
+
+    ROOMS {
+        int id PK
+        int floor_id FK
+        varchar room_number "CONF-B, AUDIT-A"
+        varchar name_fr
+        varchar name_en
+        int capacity
+        timestamp created_at
+    }
+
+    DISPLAY_SCREENS {
+        int id PK
+        varchar screen_code UK "MINPOSTEL-MAIN-ENTRANCE-01"
+        varchar name
+        varchar location_description
+        enum status "ONLINE, OFFLINE"
+        timestamp last_heartbeat
+        varchar ip_address
+        timestamp updated_at
+    }
+
+    MEDIA {
+        int id PK
+        varchar filename
+        varchar original_name
+        varchar mime_type "image/png, image/jpeg"
+        int file_size
+        varchar file_path
+        enum language "FR, EN, BOTH"
+        int uploaded_by FK
+        timestamp created_at
+    }
+
+    ANNOUNCEMENTS {
+        int id PK
+        varchar title_fr
+        varchar title_en
+        text description_fr
+        text description_en
+        enum priority "NORMAL, IMPORTANT, URGENT"
+        enum status "DRAFT, SCHEDULED, PUBLISHED, EXPIRED"
+        date start_date
+        date end_date
+        int media_id FK
+        int created_by FK
+        timestamp created_at
+    }
+
+    MEETINGS {
+        int id PK
+        varchar title_fr
+        varchar title_en
+        text description_fr
+        text description_en
+        date date
+        time start_time
+        time end_time
+        int building_id FK
+        int floor_id FK
+        int room_id FK
+        text participants_info
+        enum priority "NORMAL, IMPORTANT, URGENT"
+        enum status "SCHEDULED, UPCOMING, IN_PROGRESS, COMPLETED"
+        boolean is_published
+        int media_id FK
+        int created_by FK
+        timestamp created_at
+    }
+
+    EVENTS {
+        int id PK
+        varchar title_fr
+        varchar title_en
+        text description_fr
+        text description_en
+        date date
+        time start_time
+        time end_time
+        int building_id FK
+        int floor_id FK
+        int room_id FK
+        varchar organizer
+        varchar target_audience
+        enum priority "NORMAL, IMPORTANT, URGENT"
+        enum status "SCHEDULED, UPCOMING, IN_PROGRESS, COMPLETED"
+        boolean is_published
+        int media_id FK
+        int created_by FK
+        timestamp created_at
+    }
+
+    STAFF_COMMUNICATIONS {
+        int id PK
+        varchar title_fr
+        varchar title_en
+        text content_fr
+        text content_en
+        enum priority "NORMAL, IMPORTANT, URGENT"
+        enum visibility "PUBLIC, STAFF, RESTRICTED"
+        enum status "DRAFT, PUBLISHED, EXPIRED"
+        date start_date
+        date end_date
+        int media_id FK
+        int created_by FK
+        timestamp created_at
+    }
+
+    URGENT_MESSAGES {
+        int id PK
+        text message_fr
+        text message_en
+        enum priority "HIGH, CRITICAL"
+        enum status "ACTIVE, INACTIVE, EXPIRED"
+        datetime start_time
+        datetime end_time
+        int media_id FK
+        int created_by FK
+        timestamp created_at
+    }
+
+    ACTIVITY_LOGS {
+        int id PK
+        int user_id FK
+        varchar action "LOGIN, CREATE, UPDATE, DELETE, URGENT_BROADCAST"
+        varchar entity_type "ANNOUNCEMENT, MEETING, CONFIG"
+        int entity_id
+        text description
+        varchar ip_address
+        timestamp created_at
+    }
+
+    SYSTEM_SETTINGS {
+        int id PK
+        varchar setting_key UK
+        text setting_value
+        varchar description
+        timestamp updated_at
+    }

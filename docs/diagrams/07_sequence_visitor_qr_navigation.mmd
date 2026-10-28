@@ -1,0 +1,36 @@
+%% =========================================================================
+%% MINPOSTEL SMART DISPLAY (MSD) - DIAGRAM 07: SEQUENCE - VISITOR QR NAVIGATION
+%% Description: Physical-to-Digital Handover workflow showing how visitors scan
+%%              the QR code from the lobby screen to navigate on their phone.
+%% =========================================================================
+
+sequenceDiagram
+    autonumber
+    actor Visitor as 🚶‍♂️ Visiteur / Usager MINPOSTEL
+    participant Screen as 🖥️ Écran Kiosque (Hall Entrée)
+    participant Phone as 📱 Smartphone du Visiteur
+    participant Tunnel as ☁️ Cloudflare Tunnel / Wi-Fi
+    participant API as 🚀 Serveur Backend MSD
+    participant DB as 💾 Données d'Orientation
+
+    Note over Visitor,Screen: 1. ARRIVÉE DANS LE HALL DU MINISTÈRE
+    Visitor->>Screen: Observe la diapositive de la réunion ou de l'atelier
+    Screen->>Screen: Affiche le QR Code généré dynamiquement pour cet élément
+    
+    Note over Visitor,Phone: 2. CAPTURE & TRANSFERT NUMÉRIQUE SANS APPLICATION
+    Visitor->>Phone: Ouvre l'appareil photo du smartphone
+    Phone->>Screen: Vise et scanne le QR Code affiché sur l'écran 16:9
+    Phone->>Phone: Détecte l'URL: https://[tunnel-ou-ip]/visitor/meeting/42
+
+    Note over Phone,API: 3. CHARGEMENT SÉCURISÉ DU GUIDE D'ORIENTATION MOBILE
+    Phone->>Tunnel: Requête HTTPS vers la route visiteur
+    Tunnel->>API: GET /api/meetings/42 & GET /api/locations
+    activate API
+    API->>DB: Récupère détails (Bâtiment, Étage, Numéro Salle, Capacité, Horaires)
+    API-->>Phone: 200 OK + Rendu de la page MobileVisitorPage.jsx
+    deactivate API
+
+    Note over Visitor,Phone: 4. GUIDAGE AUTONOME DANS LES BÂTIMENTS DU MINPOSTEL
+    Phone-->>Visitor: Affiche l'itinéraire précis: "Bâtiment Principal ➔ 2e Étage ➔ Salle Conférence B"
+    Visitor->>Phone: Peut basculer la langue FR ⟷ EN sur son téléphone
+    Visitor->>Visitor: Se déplace directement vers la salle sans encombrer le poste de garde

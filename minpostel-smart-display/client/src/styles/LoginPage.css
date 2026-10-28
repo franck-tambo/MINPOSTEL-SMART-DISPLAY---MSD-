@@ -1,0 +1,258 @@
+/* ============================================================
+   MINPOSTEL SMART DISPLAY - EXECUTIVE LOGIN PAGE STYLES
+   ============================================================ */
+
+.login-page-root {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  background-color: #0B1120;
+  font-family: var(--font-family, 'Inter', sans-serif);
+  color: #FFFFFF;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background Atmospheric Glows */
+.login-bg-glow-1 {
+  position: absolute;
+  top: -10%;
+  left: -5%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.login-bg-glow-2 {
+  position: absolute;
+  bottom: -10%;
+  right: -5%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Split Pane Layout */
+.login-left-panel {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3.5rem 4rem;
+  background: linear-gradient(145deg, #0F172A 0%, #111C33 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+  z-index: 2;
+}
+
+.login-right-panel {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 2.5rem;
+  position: relative;
+  z-index: 2;
+  background-color: #0B1120;
+}
+
+/* Form Card */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: #131E32;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 2.25rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Input Group Container */
+.login-input-group {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* Left Icon (User & Lock) - Vertically Centered & Neatly Aligned */
+.login-input-icon-left {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: #64748B;
+  pointer-events: none;
+  z-index: 2;
+  transition: color 0.18s ease;
+}
+
+.login-input-group:focus-within .login-input-icon-left {
+  color: #38BDF8;
+}
+
+/* Input Elements - High Specificity to Guarantee Proper Padding & Centering */
+.login-card input.login-input,
+.login-input-group .login-input {
+  width: 100%;
+  box-sizing: border-box !important;
+  height: 48px !important;
+  line-height: 48px;
+  padding-left: 44px !important; /* Exactly 14px offset + 20px icon + 10px spacing */
+  padding-right: 16px !important;
+  background-color: #0D1B2E !important;
+  border: 1.5px solid #2D4063 !important;
+  border-radius: 10px !important;
+  color: #F1F5F9 !important;
+  font-size: 0.925rem !important;
+  font-family: inherit;
+  outline: none;
+  letter-spacing: 0.01em;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+/* Password field spacing for right-side eye toggle */
+.login-card input.login-input.login-input-password,
+.login-input-group .login-input.login-input-password {
+  padding-right: 48px !important; /* Leaves clean space for eye icon without overlapping */
+}
+
+.login-input::placeholder {
+  color: #4A6080 !important;
+  font-style: normal;
+  font-size: 0.875rem;
+  letter-spacing: 0.01em;
+}
+
+.login-input:hover {
+  border-color: #3B5EA6 !important;
+  background-color: #0F1F35 !important;
+}
+
+.login-input:focus {
+  border-color: #3B82F6 !important;
+  background-color: #0F1F35 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18), inset 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Right Visibility Toggle Button - Perfectly Vertically Centered on Far Right */
+.login-input-btn-right {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #64748B;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 0;
+  z-index: 2;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.login-input-btn-right:hover {
+  color: #38BDF8;
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.login-input-btn-right:focus-visible {
+  outline: 2px solid #38BDF8;
+  outline-offset: 1px;
+}
+
+.login-btn-submit {
+  width: 100%;
+  padding: 12px;
+  background-color: #2563EB;
+  border: none;
+  border-radius: 8px;
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+  transition: all 0.15s ease;
+}
+
+.login-btn-submit:hover:not(:disabled) {
+  background-color: #1D4ED8;
+}
+
+/* ============================================================
+   RESPONSIVE BREAKPOINTS
+   ============================================================ */
+
+/* Tablet & Mobile (< 1024px) */
+@media (max-width: 1024px) {
+  .login-left-panel {
+    padding: 2.5rem;
+  }
+
+  .login-right-panel {
+    padding: 2rem;
+  }
+}
+
+/* Mobile Devices (< 840px) */
+@media (max-width: 840px) {
+  .login-page-root {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .login-left-panel {
+    flex: none;
+    width: 100%;
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .login-left-features,
+  .login-telemetry-box {
+    display: none !important;
+  }
+
+  .login-right-panel {
+    flex: 1;
+    width: 100%;
+    padding: 2rem 1.25rem 3rem 1.25rem;
+    justify-content: flex-start;
+  }
+
+  .login-card {
+    padding: 1.75rem 1.25rem;
+    max-width: 100%;
+    border-radius: 14px;
+  }
+
+  .login-lang-btn-top {
+    position: static !important;
+    margin-bottom: 1.25rem;
+    align-self: flex-end;
+  }
+}

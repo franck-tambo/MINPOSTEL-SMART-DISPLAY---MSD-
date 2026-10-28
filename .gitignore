@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+minpostel-smart-display/.env
+
+# Large binaries & Executables
+*.exe
+cloudflared*.exe
+minpostel-smart-display/*.exe
+
+# Build outputs
+dist/
+build/
+client/dist/
+minpostel-smart-display/client/dist/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Operating System files
+.DS_Store
+Thumbs.db

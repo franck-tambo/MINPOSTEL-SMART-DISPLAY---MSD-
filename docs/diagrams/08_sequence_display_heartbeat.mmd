@@ -1,0 +1,44 @@
+%% =========================================================================
+%% MINPOSTEL SMART DISPLAY (MSD) - DIAGRAM 08: SEQUENCE - DISPLAY HEARTBEAT
+%% Description: Hardware health monitoring and automated fault detection
+%%              using periodic WebSocket heartbeat pings and timeout sweeps.
+%% =========================================================================
+
+sequenceDiagram
+    autonumber
+    participant Kiosk as 🖥️ Écran Kiosque (Smart TV / Kiosk)
+    participant Socket as ⚡ Socket.IO Gateway
+    participant Monitor as 💓 Daemon Heartbeat Monitor
+    participant Admin as 💻 Panneau d'Administration
+
+    Note over Kiosk,Socket: 1. ÉMISSION RÉGULIÈRE DES BATTEMENTS DE CŒUR (Pings)
+    loop Toutes les 15 secondes (Intervalle nominal)
+        Kiosk->>Socket: socket.emit("DISPLAY_HEARTBEAT", { screenId: "MINPOSTEL-MAIN-ENTRANCE-01" })
+        activate Socket
+        Socket->>Socket: Met à jour screenStatusMap (statut="ONLINE", lastHeartbeat=NOW)
+        Socket-->>Admin: io.emit("DISPLAY_STATUS_UPDATE", { status: "ONLINE", screenId })
+        deactivate Socket
+    end
+
+    Note over Monitor,Socket: 2. BALAYAGE DE SURVEILLANCE & DÉTECTION DE PANNE
+    loop Toutes les 15 secondes
+        Monitor->>Monitor: Calcule diffSeconds = (Now - lastHeartbeat)
+        alt diffSeconds <= 45s
+            Monitor->>Monitor: Écran opérationnel (Aucune action)
+        else diffSeconds > 45s (Coupure réseau ou extinction écran)
+            Monitor->>Monitor: Détecte la rupture de pulsation
+            Monitor->>Socket: Marque l'écran en statut "OFFLINE"
+            activate Socket
+            Socket-->>Admin: io.emit("DISPLAY_STATUS_UPDATE", { status: "OFFLINE", screenId })
+            deactivate Socket
+            Admin->>Admin: Le badge passe immédiatement au ROUGE ("HORS LIGNE")
+            Admin->>Admin: Alerte visuelle pour l'équipe technique MINPOSTEL
+        end
+    end
+
+    Note over Kiosk,Admin: 3. RÉTABLISSEMENT AUTOMATIQUE DU SERVICE
+    Kiosk->>Socket: Rétablissement réseau ➔ Nouveau "DISPLAY_HEARTBEAT"
+    activate Socket
+    Socket-->>Admin: io.emit("DISPLAY_STATUS_UPDATE", { status: "ONLINE", screenId })
+    deactivate Socket
+    Admin->>Admin: Le badge redevient VERT ("EN LIGNE") automatiquement

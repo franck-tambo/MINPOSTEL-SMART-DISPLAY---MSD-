@@ -1,0 +1,92 @@
+%% =========================================================================
+%% MINPOSTEL SMART DISPLAY (MSD) - DIAGRAM 03: SYSTEM ARCHITECTURE (C4 CONTAINER)
+%% Description: Multi-tier architectural container diagram displaying frontend
+%%              interfaces, application gateway, real-time engines, and data stores.
+%% =========================================================================
+
+flowchart TB
+    %% CLIENT LAYER
+    subgraph CLIENT_TIER ["1. COUCHE PRÉSENTATION (Frontend React 18 + Vite)"]
+        direction LR
+        UI_ADMIN["💻 Panneau d'Administration Web<br/><b>Admin Dashboard (SPA)</b><br/>• React 18 / Lucide Icons<br/>• Gestion de contenu & audits<br/>• Déclencheur d'alertes"]
+        UI_KIOSK["🖥️ Écran d'Affichage Kiosque<br/><b>Public Display View</b><br/>• Format 16:9 Full HD / 4K<br/>• Carrousel synchronisé & Météo<br/>• Générateur dynamique de QR Codes"]
+        UI_MOBILE["📱 Portail Visiteur Mobile<br/><b>Mobile Visitor Webapp</b><br/>• Vue responsive sans installation<br/>• Orientation salles, étages, horaires<br/>• Accessible sur Wi-Fi ou 4G/5G"]
+    end
+
+    %% GATEWAY & TRANSPORT
+    subgraph GATEWAY_TIER ["2. PASSERELLE RÉSEAU & TRANSPORT SÉCURISÉ"]
+        direction LR
+        GW_LAN["🏢 Réseau Local LAN / Wi-Fi MINPOSTEL<br/>(HTTP / WebSocket direct: Ports 5000 & 5173)"]
+        GW_TUNNEL["☁️ Service Tunnel Cloudflare (cloudflared)<br/>(Tunnel HTTPS sécurisé pour accès cellulaire 4G/5G)"]
+        GW_WS["⚡ Moteur d'Événements WebSocket<br/>(Socket.IO bi-directionnel à faible latence)"]
+    end
+
+    %% SERVER APPLICATION LAYER
+    subgraph SERVER_TIER ["3. COUCHE MÉTIER & APPLICATION (Node.js + Express.js)"]
+        direction TB
+        subgraph API_ROUTERS ["Contrôleurs & Routes RESTful"]
+            direction LR
+            R_AUTH["🔐 Auth (JWT & Bcrypt)"]
+            R_CONTENT["📢 Content (Annonces, Réunions, Events)"]
+            R_URGENT["🚨 Urgent Alerts (Broadcast)"]
+            R_MEDIA["🖼️ Media Manager (Multer)"]
+            R_LOC["🏢 Locations (Salles/Étages)"]
+            R_SET["⚙️ System Settings & Logs"]
+        end
+
+        subgraph BG_SERVICES ["Services d'Arrière-Plan & Daemons"]
+            direction LR
+            S_SOCKET["📡 Sockets Gateway<br/>(Rooms & Channels)"]
+            S_HEARTBEAT["💓 Moniteur Heartbeat<br/>(Détection panne écran >45s)"]
+            S_POWER["🌙 Power Manager<br/>(Veille & Réveil programmés)"]
+            S_TUNNEL_SVC["🌐 Tunnel Watcher<br/>(Auto-reconnexion & backoff)"]
+        end
+    end
+
+    %% DATA TIER
+    subgraph DATA_TIER ["4. COUCHE PERSISTANCE & DONNÉES (Architecture Résiliente)"]
+        direction LR
+        DB_POSTGRES[("🐘 PostgreSQL / Supabase<br/>(Base distante Cloud & Pooling)")]
+        DB_MYSQL[("🐬 MySQL 8.0+ / MariaDB<br/>(Base relationnelle On-Premises)")]
+        DB_JSON[("💾 Store Local JSON & RAM<br/>(msd_store.json - Tolérance aux pannes)")]
+        STORAGE_FS[("📁 Système de Fichiers /uploads<br/>(Affiches, Médias, Images)")]
+    end
+
+    %% CONNECTIVITY
+    UI_ADMIN -->|"HTTP REST & JWT"| GW_LAN
+    UI_KIOSK -->|"WebSocket & HTTP"| GW_LAN
+    UI_MOBILE -->|"HTTP / QR Target"| GW_TUNNEL
+    UI_MOBILE -.->|"Alternative Wi-Fi"| GW_LAN
+
+    GW_LAN --> R_AUTH
+    GW_LAN --> R_CONTENT
+    GW_LAN --> R_URGENT
+    GW_LAN --> R_MEDIA
+    GW_LAN --> R_LOC
+    GW_LAN --> R_SET
+    GW_TUNNEL --> R_CONTENT
+    GW_TUNNEL --> R_LOC
+
+    GW_LAN <==>|"Bi-directional Sync"| GW_WS
+    GW_WS <==> S_SOCKET
+
+    S_SOCKET --> UI_KIOSK
+    S_SOCKET --> UI_ADMIN
+    S_HEARTBEAT --> S_SOCKET
+    S_POWER --> S_SOCKET
+    S_TUNNEL_SVC -.-> GW_TUNNEL
+
+    R_AUTH & R_CONTENT & R_URGENT & R_LOC & R_SET ==>|"Driver Polyvalent"| DB_POSTGRES
+    R_AUTH & R_CONTENT & R_URGENT & R_LOC & R_SET -.->|"Mode Local On-Prem"| DB_MYSQL
+    R_AUTH & R_CONTENT & R_URGENT & R_LOC & R_SET ==>|"Repli Résilient Automatique"| DB_JSON
+    R_MEDIA --> STORAGE_FS
+
+    classDef clientStyle fill:#EFF6FF,stroke:#3B82F6,stroke-width:2px,color:#1E40AF;
+    classDef gatewayStyle fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
+    classDef serverStyle fill:#F3E8FF,stroke:#9333EA,stroke-width:2px,color:#581C87;
+    classDef dataStyle fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#065F46;
+
+    class UI_ADMIN,UI_KIOSK,UI_MOBILE clientStyle;
+    class GW_LAN,GW_TUNNEL,GW_WS gatewayStyle;
+    class R_AUTH,R_CONTENT,R_URGENT,R_MEDIA,R_LOC,R_SET,S_SOCKET,S_HEARTBEAT,S_POWER,S_TUNNEL_SVC serverStyle;
+    class DB_POSTGRES,DB_MYSQL,DB_JSON,STORAGE_FS dataStyle;
