@@ -194,19 +194,9 @@ export default function PublicDisplayPage() {
   const ROTATION_DURATION_MS = durationSeconds * 1000;
   const [progressWidth, setProgressWidth] = useState(0);
 
-  // Independent Language Cycling (e.g. 10s default — does NOT restart or abort slide rotation)
-  const langCycleSeconds = settings?.language_cycle_seconds && Number(settings.language_cycle_seconds) > 0
-    ? Number(settings.language_cycle_seconds)
-    : 10;
-
-  useEffect(() => {
-    const langInterval = setInterval(() => {
-      setLang(prev => (prev === 'FR' ? 'EN' : 'FR'));
-    }, langCycleSeconds * 1000);
-    return () => clearInterval(langInterval);
-  }, [langCycleSeconds]);
-
-  // High-Precision Slide Rotation Timer — ensures each slide plays until its full duration completes
+  // High-Precision Slide Rotation Timer:
+  // 1. Each slide plays until its full duration completes without interruption
+  // 2. All items in the playlist are displayed in one language, and THEN all items are displayed in the other language
   useEffect(() => {
     if (playlistItems.length === 0 || urgentMessage) {
       setProgressWidth(0);
@@ -223,7 +213,15 @@ export default function PublicDisplayPage() {
 
       if (elapsed >= ROTATION_DURATION_MS) {
         clearInterval(progressInterval);
-        setCurrentIndex(prev => (prev + 1) % Math.max(1, playlistItems.length));
+        setCurrentIndex(prev => {
+          const nextIndex = (prev + 1) % Math.max(1, playlistItems.length);
+          // When all informations in the playlist have finished displaying in the current language,
+          // switch to the other language for the next full rotation round!
+          if (nextIndex === 0) {
+            setLang(currentLang => (currentLang === 'FR' ? 'EN' : 'FR'));
+          }
+          return nextIndex;
+        });
         setSlideCycle(c => c + 1);
         setProgressWidth(0);
       }
@@ -522,77 +520,40 @@ export default function PublicDisplayPage() {
                   const itemDateLabel = getItemDateLabel(activeItem, lang);
                   return (
                     <>
-                      <div className="pd-anim-badge" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+                      {/* LIVE ONGOING INDICATOR (Displayed only when start time has reached) */}
+                      {isItemStarted(activeItem, currentTime) && (
                         <div
-                          className={`pd-slide-type-badge ${activeItem.itemType.toLowerCase()}`}
+                          className="pd-slide-status-badge ongoing"
                           style={{
-                            borderColor: activeItem.card_color ? `${activeItem.card_color}60` : undefined
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.45rem',
+                            padding: '4px 14px',
+                            borderRadius: '20px',
+                            background: 'rgba(239, 68, 68, 0.22)',
+                            border: '1.5px solid #EF4444',
+                            color: '#FCA5A5',
+                            fontSize: '0.8rem',
+                            fontWeight: 800,
+                            letterSpacing: '0.06em',
+                            textTransform: 'uppercase',
+                            boxShadow: '0 0 15px rgba(239, 68, 68, 0.45)',
+                            marginBottom: '0.5rem',
+                            width: 'fit-content'
                           }}
                         >
-                          {getTypeIcon(activeItem.itemType)}
-                          <span>{getTypeLabel(activeItem.itemType, lang)}</span>
+                          <span style={{
+                            width: '8px',
+                            height: '8px',
+                            borderRadius: '50%',
+                            backgroundColor: '#EF4444',
+                            boxShadow: '0 0 10px #EF4444',
+                            display: 'inline-block',
+                            animation: 'pd-pulse-dot 1.2s infinite ease-in-out'
+                          }} />
+                          <span>{lang === 'FR' ? 'EN COURS' : 'ONGOING'}</span>
                         </div>
-
-                        {/* LIVE ONGOING / UPCOMING STATUS BADGE */}
-                        {isItemStarted(activeItem, currentTime) ? (
-                          <div
-                            className="pd-slide-status-badge ongoing"
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '0.45rem',
-                              padding: '5px 14px',
-                              borderRadius: '20px',
-                              background: 'rgba(239, 68, 68, 0.22)',
-                              border: '1.5px solid #EF4444',
-                              color: '#FCA5A5',
-                              fontSize: '0.8rem',
-                              fontWeight: 800,
-                              letterSpacing: '0.06em',
-                              textTransform: 'uppercase',
-                              boxShadow: '0 0 15px rgba(239, 68, 68, 0.45)'
-                            }}
-                          >
-                            <span style={{
-                              width: '9px',
-                              height: '9px',
-                              borderRadius: '50%',
-                              backgroundColor: '#EF4444',
-                              boxShadow: '0 0 10px #EF4444',
-                              display: 'inline-block',
-                              animation: 'pd-pulse-dot 1.2s infinite ease-in-out'
-                            }} />
-                            <span>{lang === 'FR' ? 'EN COURS' : 'ONGOING'}</span>
-                          </div>
-                        ) : (
-                          <div
-                            className="pd-slide-status-badge upcoming"
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '0.45rem',
-                              padding: '5px 14px',
-                              borderRadius: '20px',
-                              background: 'rgba(56, 189, 248, 0.15)',
-                              border: '1px solid rgba(56, 189, 248, 0.45)',
-                              color: '#38BDF8',
-                              fontSize: '0.8rem',
-                              fontWeight: 700,
-                              letterSpacing: '0.05em',
-                              textTransform: 'uppercase'
-                            }}
-                          >
-                            <span style={{
-                              width: '8px',
-                              height: '8px',
-                              borderRadius: '50%',
-                              backgroundColor: '#38BDF8',
-                              display: 'inline-block'
-                            }} />
-                            <span>{lang === 'FR' ? 'À VENIR' : 'UPCOMING'}</span>
-                          </div>
-                        )}
-                      </div>
+                      )}
                       
                       <h2 className="pd-slide-title pd-anim-title">
                         {lang === 'FR' ? activeItem.title_fr : activeItem.title_en}

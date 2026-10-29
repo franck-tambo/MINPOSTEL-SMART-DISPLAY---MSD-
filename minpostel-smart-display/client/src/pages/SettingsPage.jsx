@@ -26,7 +26,6 @@ export default function SettingsPage() {
     app_title: 'MINPOSTEL Smart Display',
     default_language: 'FR',
     rotation_duration_seconds: 15,
-    language_cycle_seconds: 10,
     heartbeat_interval_seconds: 15,
     display_code: 'MINPOSTEL-MAIN-ENTRANCE-01',
     theme_color: '#134074',
@@ -262,41 +261,6 @@ export default function SettingsPage() {
                       fontWeight: settings.rotation_duration_seconds === sec ? 700 : 500
                     }}
                     onClick={() => setSettings({ ...settings, rotation_duration_seconds: sec })}
-                  >
-                    {sec}s
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Language Cycle */}
-            <div>
-              <label className="form-label">
-                {language === 'FR' ? 'Cycle Alternance Langues FR ↔ EN (Sec)' : 'Language Cycle FR ↔ EN (Sec)'}
-              </label>
-              <input
-                type="number"
-                min="3"
-                max="120"
-                value={settings.language_cycle_seconds || 10}
-                onChange={e => setSettings({ ...settings, language_cycle_seconds: parseInt(e.target.value) || 10 })}
-                style={{ width: '100%', marginBottom: '0.4rem' }}
-              />
-              <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
-                {[5, 8, 10, 15].map(sec => (
-                  <button
-                    key={sec}
-                    type="button"
-                    className="btn-secondary"
-                    style={{
-                      fontSize: '0.75rem',
-                      padding: '0.25rem 0.6rem',
-                      background: settings.language_cycle_seconds === sec ? 'var(--primary-light)' : undefined,
-                      borderColor: settings.language_cycle_seconds === sec ? 'var(--primary)' : undefined,
-                      color: settings.language_cycle_seconds === sec ? 'var(--primary)' : undefined,
-                      fontWeight: settings.language_cycle_seconds === sec ? 700 : 500
-                    }}
-                    onClick={() => setSettings({ ...settings, language_cycle_seconds: sec })}
                   >
                     {sec}s
                   </button>
