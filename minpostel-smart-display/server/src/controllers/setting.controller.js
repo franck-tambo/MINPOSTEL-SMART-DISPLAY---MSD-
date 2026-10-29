@@ -20,21 +20,23 @@ export const getSettings = async (req, res) => {
     }
   }
 
-  // Prevent ever exposing api.trycloudflare.com
-  if (store.settings.public_base_url?.includes('api.trycloudflare.com')) {
+  // Check real-time tunnel state
+  const tunnelActive = isTunnelActive();
+  const activeTunnel = getCurrentTunnelUrl();
+  const publicUrl = tunnelActive ? (activeTunnel || '') : '';
+
+  // Clear stale trycloudflare URLs from store if tunnel is not active
+  if (!tunnelActive && store.settings.public_base_url?.includes('trycloudflare.com')) {
     store.settings.public_base_url = '';
     saveStore();
   }
-
-  const activeTunnel = getCurrentTunnelUrl();
-  const publicUrl = activeTunnel || store.settings.public_base_url || '';
 
   return sendSuccess(res, 'Paramètres système récupérés', {
     ...store.settings,
     public_base_url: publicUrl,
     local_ip: localIp,
     local_network_url: `http://${localIp}:${port}`,
-    is_tunnel_active: isTunnelActive()
+    is_tunnel_active: tunnelActive
   });
 };
 

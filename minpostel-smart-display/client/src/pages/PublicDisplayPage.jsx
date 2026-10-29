@@ -235,6 +235,26 @@ export default function PublicDisplayPage() {
     }
   };
 
+  const getVisitorQrUrl = (item) => {
+    if (!item) return '';
+    const itemPath = `/visitor/${item.itemType === 'EVENT' ? 'event' : 'meeting'}/${item.id}`;
+    
+    // 1. Active, verified cloud tunnel (if running)
+    if (settings?.is_tunnel_active && settings?.public_base_url && !settings.public_base_url.includes('api.trycloudflare.com')) {
+      return `${settings.public_base_url.trim().replace(/\/+$/, '')}${itemPath}`;
+    }
+    
+    // 2. Real LAN/Wi-Fi origin (e.g. from Smart TV at http://192.168.43.56:5173/...)
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return `${window.location.origin}${itemPath}`;
+    }
+    
+    // 3. Fallback for localhost developer testing: use detected Wi-Fi IP
+    const hostIp = settings?.local_ip || '192.168.43.56';
+    const hostPort = window.location.port || '5173';
+    return `${window.location.protocol}//${hostIp}:${hostPort}${itemPath}`;
+  };
+
   if (isPowerOff && !temporaryWake) {
     return (
       <div
@@ -542,13 +562,7 @@ export default function PublicDisplayPage() {
                   <div className="pd-anim-qr" style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'rgba(0,0,0,0.28)', padding: '1rem', borderRadius: '16px', border: `1px solid ${activeItem.card_color ? `${activeItem.card_color}45` : 'rgba(255,255,255,0.08)'}`, backdropFilter: 'blur(10px)' }}>
                     <div style={{ background: '#FFF', padding: '0.5rem', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.25)' }}>
                       <QRCodeSVG 
-                        value={
-                          settings?.public_base_url && settings.public_base_url.trim() && !settings.public_base_url.includes('api.trycloudflare.com')
-                            ? `${settings.public_base_url.trim().replace(/\/+$/, '')}/visitor/${activeItem.itemType === 'EVENT' ? 'event' : 'meeting'}/${activeItem.id}`
-                            : `${settings?.local_network_url || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
-                                ? `${window.location.protocol}//${settings?.local_ip || '192.168.100.64'}:${window.location.port || '5173'}` 
-                                : window.location.origin)}/visitor/${activeItem.itemType === 'EVENT' ? 'event' : 'meeting'}/${activeItem.id}`
-                        } 
+                        value={getVisitorQrUrl(activeItem)} 
                         size={64} 
                         fgColor="#0B2545" 
                       />

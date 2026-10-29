@@ -16,15 +16,21 @@ if (!fs.existsSync(DATA_DIR)) {
 export function getLocalIpAddress() {
   try {
     const interfaces = os.networkInterfaces();
+    const candidateIps = [];
     for (const name of Object.keys(interfaces)) {
       for (const net of interfaces[name]) {
-        if (net.family === 'IPv4' && !net.internal) {
-          return net.address;
+        if (net.family === 'IPv4' && !net.internal && !net.address.startsWith('169.254.')) {
+          // Prioritize Wi-Fi and Ethernet adapters
+          if (/wi-?fi|wlan|ethernet|eth/i.test(name)) {
+            return net.address;
+          }
+          candidateIps.push(net.address);
         }
       }
     }
+    if (candidateIps.length > 0) return candidateIps[0];
   } catch (e) {}
-  return '192.168.100.64';
+  return '192.168.43.56';
 }
 
 // Default initial seed data
