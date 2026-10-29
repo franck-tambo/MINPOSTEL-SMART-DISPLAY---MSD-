@@ -39,6 +39,22 @@
       "start_date": "2026-09-10",
       "end_date": "2026-10-10",
       "author_name": "Administrateur Principal"
+    },
+    {
+      "id": 2,
+      "title_fr": "Sécurité Numérique & Campagne Nationale",
+      "title_en": "Cybersecurity National Campaign",
+      "description_fr": "Campagne nationale de sensibilisation à la protection des données personnelles et à l'hygiène cybernétique pour les administrations publiques.",
+      "description_en": "National awareness campaign on personal data protection and cyber hygiene across public administrations.",
+      "priority": "NORMAL",
+      "status": "PUBLISHED",
+      "media_url": null,
+      "card_color": "#134074",
+      "start_date": "2026-09-18",
+      "end_date": "2026-10-18",
+      "created_by": 1,
+      "created_at": "2026-09-18T11:02:22.851084+00:00",
+      "updated_at": "2026-09-18T11:02:22.851084+00:00"
     }
   ],
   "meetings": [
@@ -165,6 +181,28 @@
       "priority": "URGENT",
       "status": "COMPLETED",
       "is_published": 1
+    },
+    {
+      "id": 2,
+      "title_fr": "Commission Technique Fibre Optique",
+      "title_en": "Fiber Optic Technical Committee",
+      "description_fr": "Validation des travaux de raccordement du Backbone National Sud-Est.",
+      "description_en": "Validation of connection works for the South-East National Backbone.",
+      "date": "2026-09-18",
+      "start_time": "14:00",
+      "end_time": "16:30",
+      "room_id": 2,
+      "priority": "NORMAL",
+      "status": "UPCOMING",
+      "participants_info": "Directeurs Techniques & Opérateurs",
+      "media_url": null,
+      "card_color": "#134074",
+      "created_by": 1,
+      "created_at": "2026-09-18T11:02:22.851084+00:00",
+      "updated_at": "2026-09-18T11:02:22.851084+00:00",
+      "building_fr": "Bâtiment Principal",
+      "floor_fr": "2e Étage",
+      "room_fr": "Salle de Conférence B"
     }
   ],
   "events": [
@@ -264,9 +302,9 @@
       "message_en": "hjkfyfkyio",
       "priority": "CRITICAL",
       "status": "INACTIVE",
-      "start_time": "2026-10-29T18:24:25.784Z",
-      "broadcasted_at": "2026-10-29T18:24:25.784Z",
-      "stopped_at": "2026-10-29T18:24:30.250Z",
+      "start_time": "2026-10-29T21:20:29.910Z",
+      "broadcasted_at": "2026-10-29T21:20:29.910Z",
+      "stopped_at": "2026-10-29T21:20:32.931Z",
       "broadcast_history": [
         {
           "broadcasted_at": "2026-10-29T17:31:03.809Z",
@@ -287,6 +325,11 @@
           "broadcasted_at": "2026-10-29T18:24:25.784Z",
           "stopped_at": "2026-10-29T18:24:30.250Z",
           "duration_seconds": 4
+        },
+        {
+          "broadcasted_at": "2026-10-29T21:20:29.910Z",
+          "stopped_at": "2026-10-29T21:20:32.931Z",
+          "duration_seconds": 3
         }
       ],
       "end_time": "2026-10-29T19:31:03.809Z"
@@ -362,22 +405,22 @@
     }
   ],
   "settings": {
-    "app_title": "MINPOSTEL Smart Display",
+    "app_title": "MINPOSTEL Smart Display Executive",
     "default_language": "FR",
-    "rotation_duration_seconds": 10,
+    "rotation_duration_seconds": 12,
     "language_cycle_seconds": 10,
     "heartbeat_interval_seconds": 15,
     "display_code": "MINPOSTEL-MAIN-ENTRANCE-01",
-    "theme_color": "#134074",
+    "theme_color": "#007A3D",
     "background_url": "",
     "power_on_time": "07:00",
     "power_off_time": "18:00",
-    "public_base_url": "https://arnold-ranger-diff-barry.trycloudflare.com",
+    "public_base_url": "https://trainers-queens-mario-hansen.trycloudflare.com",
     "local_ip": "192.168.43.56",
     "local_network_url": "http://192.168.43.56:5173",
     "is_tunnel_active": true,
     "id": 1,
-    "updated_at": "2026-09-18T11:02:22.851084+00:00"
+    "updated_at": "2026-10-29T21:50:04.532Z"
   },
   "locations": {
     "buildings": [
@@ -507,6 +550,60 @@
     ]
   },
   "logs": [
+    {
+      "id": 1793310605408,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (app_title, rotation_duration_seconds, theme_color, display_code, default_language, heartbeat_interval_seconds, power_on_time, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T21:50:04.558Z"
+    },
+    {
+      "id": 1793309808194,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (app_title, rotation_duration_seconds, theme_color)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T21:36:47.893Z"
+    },
+    {
+      "id": 1793308833605,
+      "action": "DISMISS",
+      "entity_type": "URGENT_MESSAGE",
+      "description": "Interruption de diffusion de l'alerte #1793295063809",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T21:20:32.932Z"
+    },
+    {
+      "id": 1793308830383,
+      "action": "BROADCAST",
+      "entity_type": "URGENT_MESSAGE",
+      "description": "Re-diffusion de l'alerte #1793295063809 : \"hhhzryzu...\"",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T21:20:29.910Z"
+    },
+    {
+      "id": 1793308002748,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T21:06:41.868Z"
+    },
+    {
+      "id": 1793307977876,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (power_on_time, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T21:06:16.972Z"
+    },
     {
       "id": 1793305741974,
       "action": "SETTINGS",

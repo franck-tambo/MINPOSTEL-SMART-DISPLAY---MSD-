@@ -35,7 +35,15 @@ export default function SettingsPage() {
     power_off_time: '23:59'
   };
 
-  const [settings, setSettings] = useState(() => getCached('settings') || defaultSettings);
+  const getInitialSettings = () => {
+    try {
+      const local = localStorage.getItem('msd_cached_settings');
+      if (local) return JSON.parse(local);
+    } catch (e) {}
+    return getCached('settings') || defaultSettings;
+  };
+
+  const [settings, setSettings] = useState(getInitialSettings);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -69,6 +77,9 @@ export default function SettingsPage() {
         if (d.status === 'success' && d.data) {
           setSettings(d.data);
           setCached('settings', d.data);
+          try {
+            localStorage.setItem('msd_cached_settings', JSON.stringify(d.data));
+          } catch (e) {}
         }
       })
       .catch(err => console.error('Error fetching settings:', err));
@@ -92,6 +103,9 @@ export default function SettingsPage() {
         const persistedData = { ...settings, ...(data.data || {}) };
         setSettings(persistedData);
         setCached('settings', persistedData);
+        try {
+          localStorage.setItem('msd_cached_settings', JSON.stringify(persistedData));
+        } catch (e) {}
         setSaved(true);
         setTimeout(() => setSaved(false), 4500);
       } else {

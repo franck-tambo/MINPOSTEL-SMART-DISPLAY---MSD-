@@ -104,6 +104,10 @@ export default function PublicDisplayPage() {
 
     socket.on('SETTINGS_UPDATED', (newSettings) => {
       setSettings(newSettings);
+      setCached('settings', newSettings);
+      try {
+        localStorage.setItem('msd_cached_settings', JSON.stringify(newSettings));
+      } catch (e) {}
     });
 
     socket.on('POWER_STATE', (state) => {
@@ -129,6 +133,28 @@ export default function PublicDisplayPage() {
       socket.disconnect();
     };
   }, [screenId, settings?.heartbeat_interval_seconds]);
+
+  // Automated Eco-Standby / Power Schedule from Admin Settings
+  useEffect(() => {
+    if (!settings?.power_on_time || !settings?.power_off_time) return;
+    const checkSchedule = () => {
+      const now = new Date();
+      const currentHm = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const { power_on_time, power_off_time } = settings;
+      if (power_on_time === '00:00' && (power_off_time === '23:59' || power_off_time === '24:00')) {
+        setIsPowerOff(false);
+        return;
+      }
+      if (power_on_time <= power_off_time) {
+        setIsPowerOff(currentHm < power_on_time || currentHm >= power_off_time);
+      } else {
+        setIsPowerOff(currentHm < power_on_time && currentHm >= power_off_time);
+      }
+    };
+    checkSchedule();
+    const scheduleInterval = setInterval(checkSchedule, 30000);
+    return () => clearInterval(scheduleInterval);
+  }, [settings?.power_on_time, settings?.power_off_time]);
 
   // Live Expiration Clock Ticker (updates currentTime every second so expired items drop immediately)
   useEffect(() => {
@@ -186,10 +212,11 @@ export default function PublicDisplayPage() {
   const safeIndex = playlistItems.length > 0 ? currentIndex % playlistItems.length : 0;
   const activeItem = playlistItems[safeIndex] || null;
 
-  // Slide Duration (checks activeItem duration first, then global admin setting, fallback 10s)
-  const slideDurationSeconds = activeItem?.duration_seconds 
+  // Slide Duration (checks global admin setting first, or item override, fallback 15s)
+  const slideDurationSeconds = Number(settings?.rotation_duration_seconds)
+    || activeItem?.duration_seconds 
     || activeItem?.slide_duration 
-    || (settings?.rotation_duration_seconds ? Number(settings.rotation_duration_seconds) : 10);
+    || 15;
   const slideDurationMs = slideDurationSeconds * 1000;
 
   // Stable references to prevent background state ticks from restarting the active slide
@@ -336,7 +363,11 @@ export default function PublicDisplayPage() {
   // Compute style overrides from settings
   const dynamicStyle = settings ? {
     '--msd-accent': settings.theme_color || '#134074',
-    '--msd-primary': settings.theme_color || '#0B2545'
+    '--msd-primary': settings.theme_color || '#0B2545',
+    '--theme-color': settings.theme_color || '#134074',
+    background: settings.theme_color 
+      ? `radial-gradient(circle at 50% 20%, ${settings.theme_color}38 0%, #0B1120 70%, #070D19 100%)`
+      : undefined
   } : {};
 
   // Background overlay rendering
@@ -392,7 +423,7 @@ export default function PublicDisplayPage() {
               {lang === 'FR' ? 'Paix — Travail — Patrie' : 'Peace — Work — Fatherland'}
             </div>
             <h2>
-              {lang === 'FR' ? 'Ministère des Postes et Télécommunications' : 'Ministry of Posts and Telecommunications'}
+              {settings?.app_title || (lang === 'FR' ? 'Ministère des Postes et Télécommunications' : 'Ministry of Posts and Telecommunications')}
             </h2>
           </div>
         </div>
