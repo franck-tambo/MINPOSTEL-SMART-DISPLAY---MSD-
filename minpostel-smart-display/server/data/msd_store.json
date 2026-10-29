@@ -364,14 +364,14 @@
   "settings": {
     "app_title": "MINPOSTEL Smart Display",
     "default_language": "FR",
-    "rotation_duration_seconds": 10,
+    "rotation_duration_seconds": 12,
     "language_cycle_seconds": 10,
     "heartbeat_interval_seconds": 15,
     "display_code": "MINPOSTEL-MAIN-ENTRANCE-01",
     "theme_color": "#134074",
     "background_url": "",
-    "power_on_time": "07:00",
-    "power_off_time": "18:00",
+    "power_on_time": "00:00",
+    "power_off_time": "23:59",
     "public_base_url": "https://personally-predict-return-accidents.trycloudflare.com",
     "local_ip": "192.168.43.56",
     "local_network_url": "http://192.168.43.56:5173",
@@ -507,6 +507,42 @@
     ]
   },
   "logs": [
+    {
+      "id": 1793304951944,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (power_on_time, rotation_duration_seconds, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T20:15:51.906Z"
+    },
+    {
+      "id": 1793304949486,
+      "action": "LOGIN",
+      "entity_type": "USER",
+      "description": "Connexion réussie au panneau d'administration (Administrateur Principal MINPOSTEL)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T20:15:48.921Z"
+    },
+    {
+      "id": 1793303777766,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds, power_on_time, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:56:17.220Z"
+    },
+    {
+      "id": 1793303763885,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds, heartbeat_interval_seconds, power_on_time, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:56:03.514Z"
+    },
     {
       "id": 1793303298202,
       "action": "SETTINGS",

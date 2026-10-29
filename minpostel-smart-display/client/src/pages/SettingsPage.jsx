@@ -14,7 +14,8 @@ import {
   Image as ImageIcon, 
   Monitor, 
   RotateCcw,
-  Sparkles
+  Sparkles,
+  AlertTriangle
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { getCached, setCached } from '../utils/apiCache';
@@ -36,9 +37,20 @@ export default function SettingsPage() {
 
   const [settings, setSettings] = useState(() => getCached('settings') || defaultSettings);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [restartingTunnel, setRestartingTunnel] = useState(false);
   const [tunnelMsg, setTunnelMsg] = useState(null);
+
+  // Helper to get authentication headers
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('msd_auth_token');
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+  };
 
   // Curated theme color presets
   const themePresets = [
@@ -51,7 +63,7 @@ export default function SettingsPage() {
   ];
 
   useEffect(() => {
-    fetch('/api/settings')
+    fetch('/api/settings', { headers: getAuthHeaders() })
       .then(r => r.json())
       .then(d => {
         if (d.status === 'success' && d.data) {
@@ -62,37 +74,48 @@ export default function SettingsPage() {
       .catch(err => console.error('Error fetching settings:', err));
   }, []);
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     setIsSaving(true);
-    fetch('/api/settings', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(settings)
-    })
-      .then(r => r.json())
-      .then(res => {
-        setIsSaving(false);
-        if (res.status === 'success') {
-          setSaved(true);
-          setCached('settings', settings);
-          setTimeout(() => setSaved(false), 3500);
-        }
-      })
-      .catch(err => {
-        setIsSaving(false);
-        console.error('Save failed:', err);
+    setSaved(false);
+    setSaveError(null);
+
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(settings)
       });
+      const data = await res.json();
+
+      if (res.ok && data.status === 'success') {
+        const persistedData = { ...settings, ...(data.data || {}) };
+        setSettings(persistedData);
+        setCached('settings', persistedData);
+        setSaved(true);
+        setTimeout(() => setSaved(false), 4500);
+      } else {
+        const msg = data.message || (language === 'FR' ? 'Échec de la sauvegarde des paramètres.' : 'Failed to save settings.');
+        setSaveError(msg);
+      }
+    } catch (err) {
+      console.error('Save failed:', err);
+      setSaveError(err.message || 'Network error');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleResetDefaults = () => {
     if (window.confirm(language === 'FR' ? 'Restaurer les paramètres par défaut ?' : 'Restore default settings?')) {
-      setSettings(prev => ({
-        ...prev,
+      const reset = {
+        ...settings,
         ...defaultSettings,
-        local_network_url: prev.local_network_url,
-        public_base_url: prev.public_base_url
-      }));
+        local_network_url: settings.local_network_url,
+        public_base_url: settings.public_base_url
+      };
+      setSettings(reset);
+      setCached('settings', reset);
     }
   };
 
@@ -100,13 +123,16 @@ export default function SettingsPage() {
     setRestartingTunnel(true);
     setTunnelMsg(null);
     try {
-      const res = await fetch('/api/settings/tunnel/restart', { method: 'POST' });
+      const res = await fetch('/api/settings/tunnel/restart', { 
+        method: 'POST',
+        headers: getAuthHeaders()
+      });
       if (res.ok) {
         setTunnelMsg(language === 'FR' 
           ? 'Relance du tunnel Cloudflare initiée... Patientez quelques secondes.' 
           : 'Cloudflare Tunnel restart initiated... Please wait a few seconds.');
         setTimeout(() => {
-          fetch('/api/settings')
+          fetch('/api/settings', { headers: getAuthHeaders() })
             .then(r => r.json())
             .then(d => {
               if (d.status === 'success' && d.data) {
@@ -115,6 +141,9 @@ export default function SettingsPage() {
               }
             });
         }, 5000);
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        setTunnelMsg(errData.message || (language === 'FR' ? 'Erreur lors de la relance.' : 'Error restarting tunnel.'));
       }
     } catch (e) {
       setTunnelMsg('Erreur / Error: ' + e.message);
@@ -156,6 +185,26 @@ export default function SettingsPage() {
         }}>
           <CheckCircle2 size={18} />
           <span>{language === 'FR' ? 'Paramètres enregistrés et diffusés en temps réel avec succès !' : 'Settings saved and broadcast in real time successfully!'}</span>
+        </div>
+      )}
+
+      {saveError && (
+        <div style={{
+          padding: '12px 18px',
+          backgroundColor: '#EF4444',
+          color: '#FFFFFF',
+          borderRadius: 'var(--radius-sm)',
+          fontWeight: 600,
+          fontSize: '0.875rem',
+          marginBottom: '1.25rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          boxShadow: 'var(--shadow-md)',
+          animation: 'msdFadeIn 0.3s ease'
+        }}>
+          <AlertTriangle size={18} />
+          <span>{saveError}</span>
         </div>
       )}
 
