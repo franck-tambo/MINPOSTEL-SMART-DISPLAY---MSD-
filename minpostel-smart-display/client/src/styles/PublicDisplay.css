@@ -591,7 +591,8 @@
   background: linear-gradient(90deg, #1D4ED8 0%, #38BDF8 85%, #FFFFFF 100%);
   width: 0%;
   box-shadow: 0 0 12px #38BDF8, 0 0 24px rgba(37, 99, 235, 0.8);
-  transition: width linear;
+  transition: width 0.1s linear;
+  will-change: width;
   position: relative;
 }
 

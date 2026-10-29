@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { Clock, Calendar, MapPin, AlertTriangle, PartyPopper, Megaphone, Newspaper, Globe } from 'lucide-react';
@@ -8,6 +8,7 @@ import FlagBadge from '../components/FlagBadge';
 import WeatherClockWidget from '../components/WeatherClockWidget';
 import { startAmbulanceSiren, stopAmbulanceSiren } from '../utils/alertSound.util';
 import { isItemExpired, isItemStarted, getItemDateLabel, formatDisplayDate } from '../utils/expiration.util';
+import { getCached, setCached } from '../utils/apiCache';
 import '../styles/PublicDisplay.css'; // Import the carousel stylesheet
 
 export default function PublicDisplayPage() {
@@ -16,7 +17,6 @@ export default function PublicDisplayPage() {
   // Time & Language Rotation State
   const [lang, setLang] = useState('FR'); // Alternates FR -> EN
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [slideCycle, setSlideCycle] = useState(0);
   const [currentTime, setCurrentTime] = useState(() => new Date());
 
   // Content Store
@@ -26,7 +26,7 @@ export default function PublicDisplayPage() {
   const [communications, setCommunications] = useState([]);
   const [urgentMessage, setUrgentMessage] = useState(null);
   const [newsFeeds, setNewsFeeds] = useState([]);
-  const [settings, setSettings] = useState(null);
+  const [settings, setSettings] = useState(() => getCached('settings') || null);
   const [isPowerOff, setIsPowerOff] = useState(false);
   const [temporaryWake, setTemporaryWake] = useState(false);
   const [audioUnlocked, setAudioUnlocked] = useState(false); // tracks if browser audio is unlocked
@@ -69,7 +69,12 @@ export default function PublicDisplayPage() {
 
     fetch('/api/settings')
       .then(r => r.json())
-      .then(d => { if (d.status === 'success') setSettings(d.data || null); })
+      .then(d => { 
+        if (d.status === 'success' && d.data) {
+          setSettings(d.data);
+          setCached('settings', d.data);
+        }
+      })
       .catch(e => console.error("Could not load settings:", e));
   };
 
@@ -187,16 +192,34 @@ export default function PublicDisplayPage() {
     ];
   }, [meetings, events, announcements, communications, currentTime]);
 
-  // Dynamic Slide Rotation Duration (Adheres strictly to Admin Settings, default 15s)
-  const durationSeconds = settings?.rotation_duration_seconds && Number(settings.rotation_duration_seconds) > 0
-    ? Number(settings.rotation_duration_seconds)
-    : 15;
-  const ROTATION_DURATION_MS = durationSeconds * 1000;
+  const safeIndex = playlistItems.length > 0 ? currentIndex % playlistItems.length : 0;
+  const activeItem = playlistItems[safeIndex] || null;
+
+  // Slide Duration (checks activeItem duration first, then global admin setting, fallback 10s)
+  const slideDurationSeconds = activeItem?.duration_seconds 
+    || activeItem?.slide_duration 
+    || (settings?.rotation_duration_seconds ? Number(settings.rotation_duration_seconds) : 10);
+  const slideDurationMs = slideDurationSeconds * 1000;
+
+  // Stable references to prevent background state ticks from restarting the active slide
+  const playlistRef = useRef(playlistItems);
+  playlistRef.current = playlistItems;
+
+  const durationMsRef = useRef(slideDurationMs);
+  durationMsRef.current = slideDurationMs;
+
   const [progressWidth, setProgressWidth] = useState(0);
 
+  // Clamp index if playlist shrinks
+  useEffect(() => {
+    if (playlistItems.length > 0 && currentIndex >= playlistItems.length) {
+      setCurrentIndex(0);
+    }
+  }, [playlistItems.length, currentIndex]);
+
   // High-Precision Slide Rotation Timer:
-  // 1. Each slide plays until its full duration completes without interruption
-  // 2. All items in the playlist are displayed in one language, and THEN all items are displayed in the other language
+  // 1. Plays each slide for its exact full duration without drifting or unexpected resets
+  // 2. All items in the playlist are displayed in one language, then all items in the other language
   useEffect(() => {
     if (playlistItems.length === 0 || urgentMessage) {
       setProgressWidth(0);
@@ -205,16 +228,20 @@ export default function PublicDisplayPage() {
 
     setProgressWidth(0);
     const startTime = Date.now();
+    const duration = durationMsRef.current;
 
     const progressInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
-      const pct = Math.min(100, (elapsed / ROTATION_DURATION_MS) * 100);
+      const pct = Math.min(100, Math.max(0, (elapsed / duration) * 100));
       setProgressWidth(pct);
 
-      if (elapsed >= ROTATION_DURATION_MS) {
+      if (elapsed >= duration) {
         clearInterval(progressInterval);
+        setProgressWidth(0);
         setCurrentIndex(prev => {
-          const nextIndex = (prev + 1) % Math.max(1, playlistItems.length);
+          const currentList = playlistRef.current;
+          if (!currentList || currentList.length === 0) return 0;
+          const nextIndex = (prev + 1) % currentList.length;
           // When all informations in the playlist have finished displaying in the current language,
           // switch to the other language for the next full rotation round!
           if (nextIndex === 0) {
@@ -222,18 +249,13 @@ export default function PublicDisplayPage() {
           }
           return nextIndex;
         });
-        setSlideCycle(c => c + 1);
-        setProgressWidth(0);
       }
-    }, 40);
+    }, 100);
 
     return () => {
       clearInterval(progressInterval);
     };
-  }, [slideCycle, playlistItems.length, urgentMessage, ROTATION_DURATION_MS]);
-
-  const safeIndex = playlistItems.length > 0 ? currentIndex % playlistItems.length : 0;
-  const activeItem = playlistItems[safeIndex] || null;
+  }, [currentIndex, playlistItems.length === 0, urgentMessage]);
 
   // Icon selector based on type
   const getTypeIcon = (type) => {

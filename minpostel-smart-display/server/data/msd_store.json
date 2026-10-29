@@ -43,6 +43,28 @@
   ],
   "meetings": [
     {
+      "id": 4,
+      "title_fr": "qrrt",
+      "title_en": "q25w",
+      "description_fr": "aye6ututs",
+      "description_en": "aeytqrfdhdztd",
+      "date": "2026-10-31",
+      "start_time": "14:00",
+      "end_time": "16:00",
+      "room_id": 2,
+      "participants_info": "",
+      "priority": "URGENT",
+      "status": "UPCOMING",
+      "media_url": "/uploads/dc325594cc1c1dd3b9bac904bd2e29b2.png",
+      "card_color": "#134074",
+      "created_by": 1,
+      "building_fr": "Bâtiment Principal",
+      "floor_fr": "2e Étage",
+      "room_fr": "Salle de Conférence B",
+      "created_at": "2026-10-29T19:39:09.07947+00:00",
+      "updated_at": "2026-10-29T19:39:09.07947+00:00"
+    },
+    {
       "id": 1793293481867,
       "title_fr": "VGrg",
       "title_en": "arhtarfg",
@@ -218,6 +240,24 @@
     }
   ],
   "urgentMessages": [
+    {
+      "id": 1793303122573,
+      "message_fr": "tdtjhgdk",
+      "message_en": "kxtyxhg",
+      "priority": "CRITICAL",
+      "status": "INACTIVE",
+      "start_time": "2026-10-29T19:45:22.573Z",
+      "broadcasted_at": "2026-10-29T19:45:22.573Z",
+      "stopped_at": "2026-10-29T19:45:25.144Z",
+      "broadcast_history": [
+        {
+          "broadcasted_at": "2026-10-29T19:45:22.573Z",
+          "stopped_at": "2026-10-29T19:45:25.144Z",
+          "duration_seconds": 3
+        }
+      ],
+      "end_time": "2026-10-29T21:45:22.573Z"
+    },
     {
       "id": 1793295063809,
       "message_fr": "hhhzryzu",
@@ -467,6 +507,114 @@
     ]
   },
   "logs": [
+    {
+      "id": 1793303298202,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds, power_on_time, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:48:18.132Z"
+    },
+    {
+      "id": 1793303153836,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:45:53.122Z"
+    },
+    {
+      "id": 1793303125704,
+      "action": "DISMISS",
+      "entity_type": "URGENT_MESSAGE",
+      "description": "Interruption de diffusion de l'alerte #1793303122573",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:45:25.145Z"
+    },
+    {
+      "id": 1793303122636,
+      "action": "BROADCAST",
+      "entity_type": "URGENT_MESSAGE",
+      "description": "Diffusion d'alerte urgente : \"tdtjhgdk...\"",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:45:22.574Z"
+    },
+    {
+      "id": 1793302950328,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds, power_on_time, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:42:30.299Z"
+    },
+    {
+      "id": 1793302920626,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds, heartbeat_interval_seconds, power_on_time, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:41:59.642Z"
+    },
+    {
+      "id": 1793302918070,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (heartbeat_interval_seconds)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:41:57.274Z"
+    },
+    {
+      "id": 1793302904802,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (power_on_time, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:41:44.042Z"
+    },
+    {
+      "id": 1793302889914,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:41:29.061Z"
+    },
+    {
+      "id": 1793302818486,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:40:18.437Z"
+    },
+    {
+      "id": 1793302796989,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:39:56.177Z"
+    },
+    {
+      "id": 1793302749195,
+      "action": "CREATE",
+      "entity_type": "MEETING",
+      "description": "Planification de la réunion : \"qrrt\" (14:00 - 16:00)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:39:08.814Z"
+    },
     {
       "id": 1793301765934,
       "action": "SETTINGS",
