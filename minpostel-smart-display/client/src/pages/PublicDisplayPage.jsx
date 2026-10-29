@@ -27,6 +27,7 @@ export default function PublicDisplayPage() {
   const [newsFeeds, setNewsFeeds] = useState([]);
   const [settings, setSettings] = useState(null);
   const [isPowerOff, setIsPowerOff] = useState(false);
+  const [temporaryWake, setTemporaryWake] = useState(false);
   const [audioUnlocked, setAudioUnlocked] = useState(false); // tracks if browser audio is unlocked
 
   // Socket Connection State
@@ -234,8 +235,47 @@ export default function PublicDisplayPage() {
     }
   };
 
-  if (isPowerOff) {
-    return <div style={{ width: '100vw', height: '100vh', backgroundColor: '#000' }} />;
+  if (isPowerOff && !temporaryWake) {
+    return (
+      <div
+        onClick={() => setTemporaryWake(true)}
+        style={{
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: '#030712',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#64748B',
+          cursor: 'pointer',
+          userSelect: 'none',
+          fontFamily: 'Inter, system-ui, sans-serif'
+        }}
+      >
+        <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.4 }}>🌙</div>
+        <div style={{ fontSize: '1.15rem', fontWeight: 700, color: '#CBD5E1', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          Veille Énergétique MINPOSTEL
+        </div>
+        <div style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.4rem', letterSpacing: '0.04em' }}>
+          Automated Eco-Standby Mode (Hors heures de service)
+        </div>
+        <div
+          style={{
+            marginTop: '1.75rem',
+            padding: '8px 20px',
+            borderRadius: '9999px',
+            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            color: '#38BDF8',
+            fontSize: '0.825rem',
+            fontWeight: 600
+          }}
+        >
+          Touchez l'écran pour réveiller • Tap to wake
+        </div>
+      </div>
+    );
   }
 
   // Compute style overrides from settings
