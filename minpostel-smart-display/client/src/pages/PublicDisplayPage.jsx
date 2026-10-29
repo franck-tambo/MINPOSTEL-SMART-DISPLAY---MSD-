@@ -7,7 +7,7 @@ import CameroonEmblem from '../components/CameroonEmblem';
 import FlagBadge from '../components/FlagBadge';
 import WeatherClockWidget from '../components/WeatherClockWidget';
 import { startAmbulanceSiren, stopAmbulanceSiren } from '../utils/alertSound.util';
-import { isItemExpired, getItemDateLabel, formatDisplayDate } from '../utils/expiration.util';
+import { isItemExpired, isItemStarted, getItemDateLabel, formatDisplayDate } from '../utils/expiration.util';
 import '../styles/PublicDisplay.css'; // Import the carousel stylesheet
 
 export default function PublicDisplayPage() {
@@ -16,6 +16,7 @@ export default function PublicDisplayPage() {
   // Time & Language Rotation State
   const [lang, setLang] = useState('FR'); // Alternates FR -> EN
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [slideCycle, setSlideCycle] = useState(0);
   const [currentTime, setCurrentTime] = useState(() => new Date());
 
   // Content Store
@@ -133,11 +134,11 @@ export default function PublicDisplayPage() {
     };
   }, [screenId, settings?.heartbeat_interval_seconds]);
 
-  // Live Expiration Clock Ticker (updates currentTime every 10 seconds)
+  // Live Expiration Clock Ticker (updates currentTime every second so expired items drop immediately)
   useEffect(() => {
     const timeInterval = setInterval(() => {
       setCurrentTime(new Date());
-    }, 10000);
+    }, 1000);
     return () => clearInterval(timeInterval);
   }, []);
  
@@ -166,10 +167,17 @@ export default function PublicDisplayPage() {
   const isDisplayableItem = (item) => {
     if (!item) return false;
     const status = (item.status || '').toUpperCase();
-    return !['CANCELLED', 'ARCHIVED', 'DRAFT', 'EXPIRED', 'DELETED'].includes(status);
+    if (['CANCELLED', 'ARCHIVED', 'DRAFT', 'DELETED', 'FINISHED', 'COMPLETED', 'EXPIRED'].includes(status)) {
+      return false;
+    }
+    // Automatically remove item from display when its scheduled end time has reached
+    if (isItemExpired(item, currentTime)) {
+      return false;
+    }
+    return true;
   };
 
-  // Consolidate & Filter Active Playlist Items (Retains all active/published items created by admin)
+  // Consolidate & Filter Active Playlist Items (Retains active/published items and drops them when end time is reached)
   const playlistItems = useMemo(() => {
     return [
       ...meetings.filter(isDisplayableItem).map(m => ({ ...m, itemType: 'MEETING' })),
@@ -177,7 +185,7 @@ export default function PublicDisplayPage() {
       ...announcements.filter(a => isDisplayableItem(a) && (a.status === 'PUBLISHED' || a.status === 'ACTIVE' || !a.status)).map(a => ({ ...a, itemType: 'ANNOUNCEMENT' })),
       ...communications.filter(c => isDisplayableItem(c) && (c.status === 'PUBLISHED' || c.status === 'ACTIVE' || !c.status)).map(c => ({ ...c, itemType: 'COMMUNICATION' }))
     ];
-  }, [meetings, events, announcements, communications]);
+  }, [meetings, events, announcements, communications, currentTime]);
 
   // Dynamic Slide Rotation Duration (Adheres strictly to Admin Settings, default 15s)
   const durationSeconds = settings?.rotation_duration_seconds && Number(settings.rotation_duration_seconds) > 0
@@ -198,34 +206,33 @@ export default function PublicDisplayPage() {
     return () => clearInterval(langInterval);
   }, [langCycleSeconds]);
 
-  // High-Precision Slide Rotation Timer
+  // High-Precision Slide Rotation Timer — ensures each slide plays until its full duration completes
   useEffect(() => {
-    if (playlistItems.length === 0 || urgentMessage) return;
+    if (playlistItems.length === 0 || urgentMessage) {
+      setProgressWidth(0);
+      return;
+    }
 
     setProgressWidth(0);
     const startTime = Date.now();
 
     const progressInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
-      const pct = (elapsed / ROTATION_DURATION_MS) * 100;
-      if (pct >= 100) {
-        setProgressWidth(100);
-        clearInterval(progressInterval);
-      } else {
-        setProgressWidth(pct);
-      }
-    }, 50);
+      const pct = Math.min(100, (elapsed / ROTATION_DURATION_MS) * 100);
+      setProgressWidth(pct);
 
-    const rotationTimeout = setTimeout(() => {
-      setCurrentIndex(prev => (prev + 1) % playlistItems.length);
-      setProgressWidth(0);
-    }, ROTATION_DURATION_MS);
+      if (elapsed >= ROTATION_DURATION_MS) {
+        clearInterval(progressInterval);
+        setCurrentIndex(prev => (prev + 1) % Math.max(1, playlistItems.length));
+        setSlideCycle(c => c + 1);
+        setProgressWidth(0);
+      }
+    }, 40);
 
     return () => {
       clearInterval(progressInterval);
-      clearTimeout(rotationTimeout);
     };
-  }, [currentIndex, playlistItems.length, urgentMessage, ROTATION_DURATION_MS]);
+  }, [slideCycle, playlistItems.length, urgentMessage, ROTATION_DURATION_MS]);
 
   const safeIndex = playlistItems.length > 0 ? currentIndex % playlistItems.length : 0;
   const activeItem = playlistItems[safeIndex] || null;
@@ -515,7 +522,7 @@ export default function PublicDisplayPage() {
                   const itemDateLabel = getItemDateLabel(activeItem, lang);
                   return (
                     <>
-                      <div className="pd-anim-badge">
+                      <div className="pd-anim-badge" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
                         <div
                           className={`pd-slide-type-badge ${activeItem.itemType.toLowerCase()}`}
                           style={{
@@ -525,6 +532,66 @@ export default function PublicDisplayPage() {
                           {getTypeIcon(activeItem.itemType)}
                           <span>{getTypeLabel(activeItem.itemType, lang)}</span>
                         </div>
+
+                        {/* LIVE ONGOING / UPCOMING STATUS BADGE */}
+                        {isItemStarted(activeItem, currentTime) ? (
+                          <div
+                            className="pd-slide-status-badge ongoing"
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.45rem',
+                              padding: '5px 14px',
+                              borderRadius: '20px',
+                              background: 'rgba(239, 68, 68, 0.22)',
+                              border: '1.5px solid #EF4444',
+                              color: '#FCA5A5',
+                              fontSize: '0.8rem',
+                              fontWeight: 800,
+                              letterSpacing: '0.06em',
+                              textTransform: 'uppercase',
+                              boxShadow: '0 0 15px rgba(239, 68, 68, 0.45)'
+                            }}
+                          >
+                            <span style={{
+                              width: '9px',
+                              height: '9px',
+                              borderRadius: '50%',
+                              backgroundColor: '#EF4444',
+                              boxShadow: '0 0 10px #EF4444',
+                              display: 'inline-block',
+                              animation: 'pd-pulse-dot 1.2s infinite ease-in-out'
+                            }} />
+                            <span>{lang === 'FR' ? 'EN COURS' : 'ONGOING'}</span>
+                          </div>
+                        ) : (
+                          <div
+                            className="pd-slide-status-badge upcoming"
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.45rem',
+                              padding: '5px 14px',
+                              borderRadius: '20px',
+                              background: 'rgba(56, 189, 248, 0.15)',
+                              border: '1px solid rgba(56, 189, 248, 0.45)',
+                              color: '#38BDF8',
+                              fontSize: '0.8rem',
+                              fontWeight: 700,
+                              letterSpacing: '0.05em',
+                              textTransform: 'uppercase'
+                            }}
+                          >
+                            <span style={{
+                              width: '8px',
+                              height: '8px',
+                              borderRadius: '50%',
+                              backgroundColor: '#38BDF8',
+                              display: 'inline-block'
+                            }} />
+                            <span>{lang === 'FR' ? 'À VENIR' : 'UPCOMING'}</span>
+                          </div>
+                        )}
                       </div>
                       
                       <h2 className="pd-slide-title pd-anim-title">

@@ -224,9 +224,9 @@
       "message_en": "hjkfyfkyio",
       "priority": "CRITICAL",
       "status": "INACTIVE",
-      "start_time": "2026-10-29T17:42:14.180Z",
-      "broadcasted_at": "2026-10-29T17:42:14.180Z",
-      "stopped_at": "2026-10-29T17:42:17.101Z",
+      "start_time": "2026-10-29T18:24:25.784Z",
+      "broadcasted_at": "2026-10-29T18:24:25.784Z",
+      "stopped_at": "2026-10-29T18:24:30.250Z",
       "broadcast_history": [
         {
           "broadcasted_at": "2026-10-29T17:31:03.809Z",
@@ -242,6 +242,11 @@
           "broadcasted_at": "2026-10-29T17:42:14.180Z",
           "stopped_at": "2026-10-29T17:42:17.101Z",
           "duration_seconds": 3
+        },
+        {
+          "broadcasted_at": "2026-10-29T18:24:25.784Z",
+          "stopped_at": "2026-10-29T18:24:30.250Z",
+          "duration_seconds": 4
         }
       ],
       "end_time": "2026-10-29T19:31:03.809Z"
@@ -319,18 +324,20 @@
   "settings": {
     "app_title": "MINPOSTEL Smart Display",
     "default_language": "FR",
-    "rotation_duration_seconds": 30,
+    "rotation_duration_seconds": 10,
     "language_cycle_seconds": 10,
-    "heartbeat_interval_seconds": 20,
+    "heartbeat_interval_seconds": 15,
     "display_code": "MINPOSTEL-MAIN-ENTRANCE-01",
     "theme_color": "#134074",
     "background_url": "",
-    "power_on_time": "00:00",
-    "power_off_time": "23:59",
-    "public_base_url": "",
+    "power_on_time": "07:00",
+    "power_off_time": "18:00",
+    "public_base_url": "https://personally-predict-return-accidents.trycloudflare.com",
     "local_ip": "192.168.43.56",
     "local_network_url": "http://192.168.43.56:5173",
-    "is_tunnel_active": false
+    "is_tunnel_active": true,
+    "id": 1,
+    "updated_at": "2026-09-18T11:02:22.851084+00:00"
   },
   "locations": {
     "buildings": [
@@ -460,6 +467,150 @@
     ]
   },
   "logs": [
+    {
+      "id": 1793301765934,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (power_on_time, power_off_time, rotation_duration_seconds)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:22:44.982Z"
+    },
+    {
+      "id": 1793301762190,
+      "action": "LOGIN",
+      "entity_type": "USER",
+      "description": "Connexion réussie au panneau d'administration (Administrateur Principal MINPOSTEL)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T19:22:41.373Z"
+    },
+    {
+      "id": 1793299726538,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds, heartbeat_interval_seconds, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:48:45.858Z"
+    },
+    {
+      "id": 1793299436861,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds, heartbeat_interval_seconds, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:43:56.752Z"
+    },
+    {
+      "id": 1793299392591,
+      "action": "LOGIN",
+      "entity_type": "USER",
+      "description": "Connexion réussie au panneau d'administration (Administrateur Principal MINPOSTEL)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:43:12.247Z"
+    },
+    {
+      "id": 1793298517280,
+      "action": "DELETE",
+      "entity_type": "MEETING",
+      "description": "Suppression de la réunion #3 (r55rgrh)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:28:37.074Z"
+    },
+    {
+      "id": 1793298495338,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds, heartbeat_interval_seconds, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:28:14.431Z"
+    },
+    {
+      "id": 1793298492345,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds, heartbeat_interval_seconds, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:28:12.269Z"
+    },
+    {
+      "id": 1793298490053,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds, heartbeat_interval_seconds, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:28:09.234Z"
+    },
+    {
+      "id": 1793298454357,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds, heartbeat_interval_seconds, power_off_time)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:27:33.867Z"
+    },
+    {
+      "id": 1793298309264,
+      "action": "CREATE",
+      "entity_type": "MEETING",
+      "description": "Planification de la réunion : \"r55rgrh\" (14:00 - 16:00)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:25:09.014Z"
+    },
+    {
+      "id": 1793298270853,
+      "action": "DISMISS",
+      "entity_type": "URGENT_MESSAGE",
+      "description": "Interruption de diffusion de l'alerte #1793295063809",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:24:30.251Z"
+    },
+    {
+      "id": 1793298266143,
+      "action": "BROADCAST",
+      "entity_type": "URGENT_MESSAGE",
+      "description": "Re-diffusion de l'alerte #1793295063809 : \"hhhzryzu...\"",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:24:25.785Z"
+    },
+    {
+      "id": 1793298236150,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:23:55.689Z"
+    },
+    {
+      "id": 1793298198924,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds, heartbeat_interval_seconds, power_off_time, public_base_url)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:23:18.467Z"
+    },
+    {
+      "id": 1793298195319,
+      "action": "SETTINGS",
+      "entity_type": "CONFIG",
+      "description": "Mise à jour des paramètres système (rotation_duration_seconds, heartbeat_interval_seconds, power_off_time, public_base_url, is_tunnel_active)",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-29T18:23:15.311Z"
+    },
     {
       "id": 1793295737140,
       "action": "DISMISS",
