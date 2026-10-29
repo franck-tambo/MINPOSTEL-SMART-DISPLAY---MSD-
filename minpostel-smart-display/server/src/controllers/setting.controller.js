@@ -46,13 +46,37 @@ export const updateSettings = async (req, res) => {
     req.body.public_base_url = '';
   }
 
+  if (req.body.rotation_duration_seconds !== undefined) {
+    req.body.rotation_duration_seconds = Number(req.body.rotation_duration_seconds) || 15;
+  }
+  if (req.body.language_cycle_seconds !== undefined) {
+    req.body.language_cycle_seconds = Number(req.body.language_cycle_seconds) || 10;
+  }
+  if (req.body.heartbeat_interval_seconds !== undefined) {
+    req.body.heartbeat_interval_seconds = Number(req.body.heartbeat_interval_seconds) || 15;
+  }
+
   const changedKeys = Object.keys(req.body).filter(k => store.settings[k] !== req.body[k]);
   store.settings = { ...store.settings, ...req.body };
   saveStore();
 
   if (supabase) {
     try {
-      await supabase.from('settings').upsert({ id: 1, ...store.settings });
+      const dbPayload = {
+        id: 1,
+        app_title: store.settings.app_title,
+        default_language: store.settings.default_language,
+        rotation_duration_seconds: Number(store.settings.rotation_duration_seconds) || 15,
+        language_cycle_seconds: Number(store.settings.language_cycle_seconds) || 10,
+        heartbeat_interval_seconds: Number(store.settings.heartbeat_interval_seconds) || 15,
+        display_code: store.settings.display_code,
+        theme_color: store.settings.theme_color,
+        background_url: store.settings.background_url || '',
+        power_on_time: store.settings.power_on_time || '00:00',
+        power_off_time: store.settings.power_off_time || '23:59',
+        updated_at: new Date().toISOString()
+      };
+      await supabase.from('settings').upsert(dbPayload);
     } catch (e) {
       logger.warn('Supabase settings update fallback:', e.message);
     }

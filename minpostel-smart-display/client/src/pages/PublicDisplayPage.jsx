@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { Clock, Calendar, MapPin, AlertTriangle, PartyPopper, Megaphone, Newspaper, Globe } from 'lucide-react';
@@ -121,10 +121,10 @@ export default function PublicDisplayPage() {
       }
     }, pingSeconds * 1000);
 
-    // Auto-Sync Periodic Content Refresh (Every 10 Seconds fallback)
+    // Auto-Sync Periodic Content Refresh (60s fallback — real-time updates are driven by Socket.IO)
     const autoSyncInterval = setInterval(() => {
       loadDisplayContent();
-    }, 10000);
+    }, 60000);
 
     return () => {
       clearInterval(heartbeatInterval);
@@ -133,11 +133,11 @@ export default function PublicDisplayPage() {
     };
   }, [screenId, settings?.heartbeat_interval_seconds]);
 
-  // Live Expiration Clock Ticker (updates currentTime every 5 seconds)
+  // Live Expiration Clock Ticker (updates currentTime every 10 seconds)
   useEffect(() => {
     const timeInterval = setInterval(() => {
       setCurrentTime(new Date());
-    }, 5000);
+    }, 10000);
     return () => clearInterval(timeInterval);
   }, []);
  
@@ -162,45 +162,62 @@ export default function PublicDisplayPage() {
     }
   };
 
-  // Consolidate & Filter Active Playlist Items (Automatically excludes expired events & meetings)
-  const playlistItems = [
-    ...meetings.filter(m => !isItemExpired(m, currentTime)).map(m => ({ ...m, itemType: 'MEETING' })),
-    ...events.filter(e => !isItemExpired(e, currentTime)).map(e => ({ ...e, itemType: 'EVENT' })),
-    ...announcements.filter(a => a.status === 'PUBLISHED' && !isItemExpired(a, currentTime)).map(a => ({ ...a, itemType: 'ANNOUNCEMENT' })),
-    ...communications.filter(c => c.status === 'PUBLISHED' && !isItemExpired(c, currentTime)).map(c => ({ ...c, itemType: 'COMMUNICATION' }))
-  ];
+  // Helper to determine if an item is active and displayable on the public screen
+  const isDisplayableItem = (item) => {
+    if (!item) return false;
+    const status = (item.status || '').toUpperCase();
+    return !['CANCELLED', 'ARCHIVED', 'DRAFT', 'EXPIRED', 'DELETED'].includes(status);
+  };
 
-  // Dynamic Slide Rotation Duration (Configurable from Admin Settings)
+  // Consolidate & Filter Active Playlist Items (Retains all active/published items created by admin)
+  const playlistItems = useMemo(() => {
+    return [
+      ...meetings.filter(isDisplayableItem).map(m => ({ ...m, itemType: 'MEETING' })),
+      ...events.filter(isDisplayableItem).map(e => ({ ...e, itemType: 'EVENT' })),
+      ...announcements.filter(a => isDisplayableItem(a) && (a.status === 'PUBLISHED' || a.status === 'ACTIVE' || !a.status)).map(a => ({ ...a, itemType: 'ANNOUNCEMENT' })),
+      ...communications.filter(c => isDisplayableItem(c) && (c.status === 'PUBLISHED' || c.status === 'ACTIVE' || !c.status)).map(c => ({ ...c, itemType: 'COMMUNICATION' }))
+    ];
+  }, [meetings, events, announcements, communications]);
+
+  // Dynamic Slide Rotation Duration (Adheres strictly to Admin Settings, default 15s)
   const durationSeconds = settings?.rotation_duration_seconds && Number(settings.rotation_duration_seconds) > 0
     ? Number(settings.rotation_duration_seconds)
-    : 10;
+    : 15;
   const ROTATION_DURATION_MS = durationSeconds * 1000;
   const [progressWidth, setProgressWidth] = useState(0);
 
-  // Automatic Content & Language Rotation Timer
+  // Independent Language Cycling (e.g. 10s default — does NOT restart or abort slide rotation)
+  const langCycleSeconds = settings?.language_cycle_seconds && Number(settings.language_cycle_seconds) > 0
+    ? Number(settings.language_cycle_seconds)
+    : 10;
+
+  useEffect(() => {
+    const langInterval = setInterval(() => {
+      setLang(prev => (prev === 'FR' ? 'EN' : 'FR'));
+    }, langCycleSeconds * 1000);
+    return () => clearInterval(langInterval);
+  }, [langCycleSeconds]);
+
+  // High-Precision Slide Rotation Timer
   useEffect(() => {
     if (playlistItems.length === 0 || urgentMessage) return;
 
-    // Reset progress instantly
     setProgressWidth(0);
+    const startTime = Date.now();
 
-    // Then start progress animation for this slide
     const progressInterval = setInterval(() => {
-      setProgressWidth(prev => {
-        const next = prev + (100 / (ROTATION_DURATION_MS / 50));
-        return next > 100 ? 100 : next;
-      });
+      const elapsed = Date.now() - startTime;
+      const pct = (elapsed / ROTATION_DURATION_MS) * 100;
+      if (pct >= 100) {
+        setProgressWidth(100);
+        clearInterval(progressInterval);
+      } else {
+        setProgressWidth(pct);
+      }
     }, 50);
 
     const rotationTimeout = setTimeout(() => {
-      setCurrentIndex((prev) => {
-        const nextIndex = (prev + 1) % playlistItems.length;
-        // Alternate language cycle when wrapping playlist
-        if (nextIndex === 0) {
-          setLang(l => (l === 'FR' ? 'EN' : 'FR'));
-        }
-        return nextIndex;
-      });
+      setCurrentIndex(prev => (prev + 1) % playlistItems.length);
       setProgressWidth(0);
     }, ROTATION_DURATION_MS);
 
@@ -208,7 +225,7 @@ export default function PublicDisplayPage() {
       clearInterval(progressInterval);
       clearTimeout(rotationTimeout);
     };
-  }, [currentIndex, playlistItems.length, urgentMessage, lang, ROTATION_DURATION_MS]);
+  }, [currentIndex, playlistItems.length, urgentMessage, ROTATION_DURATION_MS]);
 
   const safeIndex = playlistItems.length > 0 ? currentIndex % playlistItems.length : 0;
   const activeItem = playlistItems[safeIndex] || null;
