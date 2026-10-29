@@ -34,48 +34,39 @@ export default function PublicDisplayPage() {
   // Socket Connection State
   const [socketConnected, setSocketConnected] = useState(false);
 
-  // Load Content Initial Data
-  const loadDisplayContent = () => {
-    fetch('/api/announcements')
-      .then(r => r.json())
-      .then(d => { if (d.status === 'success') setAnnouncements(d.data || []); });
+  // Load Content Initial Data Atomically
+  const loadDisplayContent = async () => {
+    try {
+      const [annRes, meetRes, evRes, commRes, msgRes, feedRes, setRes] = await Promise.all([
+        fetch('/api/announcements').then(r => r.json()).catch(() => null),
+        fetch('/api/meetings').then(r => r.json()).catch(() => null),
+        fetch('/api/events').then(r => r.json()).catch(() => null),
+        fetch('/api/communications').then(r => r.json()).catch(() => null),
+        fetch('/api/urgent-messages').then(r => r.json()).catch(() => null),
+        fetch('/api/feed/ticker').then(r => r.json()).catch(() => null),
+        fetch('/api/settings').then(r => r.json()).catch(() => null)
+      ]);
 
-    fetch('/api/meetings')
-      .then(r => r.json())
-      .then(d => { if (d.status === 'success') setMeetings(d.data || []); });
+      if (annRes?.status === 'success') setAnnouncements(annRes.data || []);
+      if (meetRes?.status === 'success') setMeetings(meetRes.data || []);
+      if (evRes?.status === 'success') setEvents(evRes.data || []);
+      if (commRes?.status === 'success') setCommunications(commRes.data || []);
 
-    fetch('/api/events')
-      .then(r => r.json())
-      .then(d => { if (d.status === 'success') setEvents(d.data || []); });
+      if (msgRes?.status === 'success') {
+        const active = (msgRes.data || []).find(m => m.status === 'ACTIVE');
+        setUrgentMessage(active || null);
+        if (!active) stopAmbulanceSiren();
+      }
 
-    fetch('/api/communications')
-      .then(r => r.json())
-      .then(d => { if (d.status === 'success') setCommunications(d.data || []); });
+      if (feedRes?.status === 'success') setNewsFeeds(feedRes.data || []);
 
-    fetch('/api/urgent-messages')
-      .then(r => r.json())
-      .then(d => {
-        if (d.status === 'success') {
-          const active = (d.data || []).find(m => m.status === 'ACTIVE');
-          setUrgentMessage(active || null);
-          if (!active) stopAmbulanceSiren();
-        }
-      });
-
-    fetch('/api/feed/ticker')
-      .then(r => r.json())
-      .then(d => { if (d.status === 'success') setNewsFeeds(d.data || []); })
-      .catch(e => console.error("Could not load feeds:", e));
-
-    fetch('/api/settings')
-      .then(r => r.json())
-      .then(d => { 
-        if (d.status === 'success' && d.data) {
-          setSettings(d.data);
-          setCached('settings', d.data);
-        }
-      })
-      .catch(e => console.error("Could not load settings:", e));
+      if (setRes?.status === 'success' && setRes.data) {
+        setSettings(setRes.data);
+        setCached('settings', setRes.data);
+      }
+    } catch (e) {
+      console.error('Error loading display content:', e);
+    }
   };
 
   useEffect(() => {

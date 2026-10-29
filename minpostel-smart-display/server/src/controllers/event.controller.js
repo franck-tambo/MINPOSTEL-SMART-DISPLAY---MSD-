@@ -13,23 +13,23 @@ export const getEvents = async (req, res) => {
           .select('*')
           .order('date', { ascending: true });
 
-        if (!error && data && data.length > 0) {
-          return sendSuccess(res, 'Événements récupérés (Supabase Cloud)', data);
+        if (!error && Array.isArray(data)) {
+          let updated = false;
+          data.forEach(sbItem => {
+            const exists = store.events.some(local => String(local.id) === String(sbItem.id) || local.title_fr === sbItem.title_fr);
+            if (!exists) {
+              store.events.push(sbItem);
+              updated = true;
+            }
+          });
+          if (updated) saveStore();
         }
       } catch (sbErr) {
         logger.warn('Supabase events query error:', sbErr.message);
       }
     }
 
-    try {
-      const items = await EventModel.findAll();
-      if (items && items.length > 0) {
-        return sendSuccess(res, 'Événements récupérés', items);
-      }
-    } catch (e) {
-      // Fallback
-    }
-
+    // Always return unified store data (ensures consistent carousel count)
     return sendSuccess(res, 'Événements récupérés', store.events);
   } catch (err) {
     return sendError(res, err.message);

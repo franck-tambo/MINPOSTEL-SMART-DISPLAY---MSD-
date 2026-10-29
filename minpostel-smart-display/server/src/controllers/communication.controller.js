@@ -14,23 +14,23 @@ export const getCommunications = async (req, res) => {
           .select('*')
           .order('created_at', { ascending: false });
 
-        if (!error && data && data.length > 0) {
-          return sendSuccess(res, 'Communications récupérées (Supabase Cloud)', data);
+        if (!error && Array.isArray(data)) {
+          let updated = false;
+          data.forEach(sbItem => {
+            const exists = store.communications.some(local => String(local.id) === String(sbItem.id) || local.title_fr === sbItem.title_fr);
+            if (!exists) {
+              store.communications.push(sbItem);
+              updated = true;
+            }
+          });
+          if (updated) saveStore();
         }
       } catch (sbErr) {
         logger.warn('Supabase comms query error:', sbErr.message);
       }
     }
 
-    try {
-      const items = await CommunicationModel.findAll();
-      if (items && items.length > 0) {
-        return sendSuccess(res, 'Communications récupérées', items);
-      }
-    } catch (e) {
-      // Fallback
-    }
-
+    // Always return unified store data (ensures consistent carousel count)
     return sendSuccess(res, 'Communications récupérées', store.communications);
   } catch (err) {
     return sendError(res, err.message);

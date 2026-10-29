@@ -13,23 +13,28 @@ export const getMeetings = async (req, res) => {
           .select('*')
           .order('date', { ascending: true });
 
-        if (!error && data && data.length > 0) {
-          return sendSuccess(res, 'Réunions récupérées (Supabase Cloud)', data);
+        if (!error && Array.isArray(data)) {
+          let updated = false;
+          data.forEach(sbItem => {
+            const exists = store.meetings.some(local => String(local.id) === String(sbItem.id) || local.title_fr === sbItem.title_fr);
+            if (!exists) {
+              store.meetings.push({
+                ...sbItem,
+                building_fr: sbItem.building_fr || 'Bâtiment Principal',
+                floor_fr: sbItem.floor_fr || '2e Étage',
+                room_fr: sbItem.room_fr || 'Salle de Conférence B'
+              });
+              updated = true;
+            }
+          });
+          if (updated) saveStore();
         }
       } catch (sbErr) {
         logger.warn('Supabase meetings query error:', sbErr.message);
       }
     }
 
-    try {
-      const items = await MeetingModel.findAll();
-      if (items && items.length > 0) {
-        return sendSuccess(res, 'Réunions récupérées', items);
-      }
-    } catch (e) {
-      // Fallback
-    }
-
+    // Always return unified store data (ensures consistent carousel count)
     return sendSuccess(res, 'Réunions récupérées', store.meetings);
   } catch (err) {
     return sendError(res, err.message);

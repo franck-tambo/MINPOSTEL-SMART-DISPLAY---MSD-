@@ -6,7 +6,7 @@ import { store, saveStore, recordActivityLog } from '../utils/store.util.js';
 
 export const getAnnouncements = async (req, res) => {
   try {
-    // 1. Try Supabase REST API only if reachable
+    // If Supabase has data, sync any missing cloud items into store without replacing local data
     if (supabase) {
       try {
         const { data, error } = await supabase
@@ -14,25 +14,23 @@ export const getAnnouncements = async (req, res) => {
           .select('*')
           .order('created_at', { ascending: false });
 
-        if (!error && data && data.length > 0) {
-          return sendSuccess(res, 'Annonces récupérées (Supabase Cloud)', data);
+        if (!error && Array.isArray(data)) {
+          let updated = false;
+          data.forEach(sbItem => {
+            const exists = store.announcements.some(local => String(local.id) === String(sbItem.id) || local.title_fr === sbItem.title_fr);
+            if (!exists) {
+              store.announcements.push(sbItem);
+              updated = true;
+            }
+          });
+          if (updated) saveStore();
         }
       } catch (sbErr) {
         logger.warn('Supabase query error:', sbErr.message);
       }
     }
 
-    // 2. Try Database Model
-    try {
-      const items = await AnnouncementModel.findAll();
-      if (items && items.length > 0) {
-        return sendSuccess(res, 'Annonces récupérées', items);
-      }
-    } catch (e) {
-      // Fallback
-    }
-
-    // 3. Instant local persistent store (< 1ms)
+    // Always return unified store data (ensures consistent carousel count)
     return sendSuccess(res, 'Annonces récupérées', store.announcements);
   } catch (err) {
     return sendError(res, err.message);
