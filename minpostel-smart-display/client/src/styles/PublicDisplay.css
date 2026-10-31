@@ -298,8 +298,9 @@
 .pd-carousel-hud {
   display: flex;
   align-items: center;
-  margin-bottom: 1.15rem;
-  padding-bottom: 0.75rem;
+  margin-top: -0.85rem;
+  margin-bottom: 1.85rem;
+  padding-bottom: 0.95rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -794,6 +795,11 @@
 
   .pd-slide-info {
     padding: 1.75rem;
+  }
+
+  .pd-carousel-hud {
+    margin-top: 0;
+    margin-bottom: 1.25rem;
   }
 
   .pd-slide-title {
