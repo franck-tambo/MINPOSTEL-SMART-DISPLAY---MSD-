@@ -294,11 +294,10 @@
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* Floating Executive Carousel HUD (Pills & Counter) */
+/* Floating Executive Carousel HUD (Pills / Pagination Dots) */
 .pd-carousel-hud {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-bottom: 1.15rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -320,35 +319,6 @@
 
 .pd-carousel-dot.active {
   width: 32px;
-}
-
-.pd-carousel-counter {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 0.25rem 0.8rem;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.pd-counter-current {
-  font-size: 1.05rem;
-  font-weight: 900;
-}
-
-.pd-counter-sep {
-  color: #64748B;
-  font-size: 0.85rem;
-}
-
-.pd-counter-total {
-  color: #94A3B8;
-  font-size: 0.85rem;
 }
 
 .pd-slide-media-placeholder {

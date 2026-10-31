@@ -528,7 +528,7 @@ export default function PublicDisplayPage() {
               
               {/* Info Section with Staggered Entrance Animations */}
               <div className="pd-slide-info">
-                {/* Executive Carousel HUD: Counter & Live Progress Dots */}
+                {/* Executive Carousel HUD: Live Progress Dots */}
                 <div className="pd-carousel-hud">
                   <div className="pd-carousel-dots">
                     {playlistItems.map((_, idx) => (
@@ -541,16 +541,6 @@ export default function PublicDisplayPage() {
                         }}
                       />
                     ))}
-                  </div>
-
-                  <div className="pd-carousel-counter">
-                    <span className="pd-counter-current" style={{ color: activeItem.card_color || '#38BDF8' }}>
-                      {String(currentIndex + 1).padStart(2, '0')}
-                    </span>
-                    <span className="pd-counter-sep">/</span>
-                    <span className="pd-counter-total">
-                      {String(playlistItems.length).padStart(2, '0')}
-                    </span>
                   </div>
                 </div>
 

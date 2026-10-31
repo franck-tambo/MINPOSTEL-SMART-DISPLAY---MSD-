@@ -284,14 +284,19 @@
       "message_en": "kxtyxhg",
       "priority": "CRITICAL",
       "status": "INACTIVE",
-      "start_time": "2026-10-29T19:45:22.573Z",
-      "broadcasted_at": "2026-10-29T19:45:22.573Z",
-      "stopped_at": "2026-10-29T19:45:25.144Z",
+      "start_time": "2026-10-31T17:24:08.976Z",
+      "broadcasted_at": "2026-10-31T17:24:08.976Z",
+      "stopped_at": "2026-10-31T17:24:10.967Z",
       "broadcast_history": [
         {
           "broadcasted_at": "2026-10-29T19:45:22.573Z",
           "stopped_at": "2026-10-29T19:45:25.144Z",
           "duration_seconds": 3
+        },
+        {
+          "broadcasted_at": "2026-10-31T17:24:08.976Z",
+          "stopped_at": "2026-10-31T17:24:10.967Z",
+          "duration_seconds": 2
         }
       ],
       "end_time": "2026-10-29T21:45:22.573Z"
@@ -550,6 +555,24 @@
     ]
   },
   "logs": [
+    {
+      "id": 1793467451886,
+      "action": "DISMISS",
+      "entity_type": "URGENT_MESSAGE",
+      "description": "Interruption de diffusion de l'alerte #1793303122573",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-31T17:24:10.968Z"
+    },
+    {
+      "id": 1793467449830,
+      "action": "BROADCAST",
+      "entity_type": "URGENT_MESSAGE",
+      "description": "Re-diffusion de l'alerte #1793303122573 : \"tdtjhgdk...\"",
+      "user": "admin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-31T17:24:08.977Z"
+    },
     {
       "id": 1793366379923,
       "action": "SETTINGS",
