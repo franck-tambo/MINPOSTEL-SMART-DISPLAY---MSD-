@@ -548,8 +548,8 @@ export default function PublicDisplayPage() {
                   const itemDateLabel = getItemDateLabel(activeItem, lang);
                   return (
                     <>
-                      {/* LIVE ONGOING INDICATOR (Displayed only when start time has reached) */}
-                      {isItemStarted(activeItem, currentTime) && (
+                      {/* LIVE ONGOING INDICATOR (Displayed only when start time for a MEETING has reached) */}
+                      {activeItem.itemType === 'MEETING' && isItemStarted(activeItem, currentTime) && (
                         <div
                           className="pd-slide-status-badge ongoing"
                           style={{
