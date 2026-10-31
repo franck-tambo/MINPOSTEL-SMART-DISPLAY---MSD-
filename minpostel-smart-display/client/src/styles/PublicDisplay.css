@@ -24,7 +24,7 @@
   position: fixed;
   inset: 0;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 20%, #131E32 0%, #0B1120 70%, #070D19 100%);
+  background: #0B172A;
   color: var(--text-main);
   font-family: 'Outfit', 'Inter', system-ui, sans-serif;
   display: flex;
@@ -35,7 +35,7 @@
 .pd-bg-overlay {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 32px 32px;
   z-index: 0;
   pointer-events: none;
@@ -46,14 +46,13 @@
   position: relative;
   z-index: 10;
   height: 88px;
-  background: rgba(11, 17, 32, 0.85);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--glass-border);
+  background: #091220;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 2.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 .pd-header-left {
@@ -174,24 +173,24 @@
   }
 }
 
-/* Ambient Color Aura Glow behind Card */
+/* Ambient Color Aura Glow behind Card (subtle, clean MINPOSTEL blue) */
 .pd-slide-ambient-aura {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 110%;
-  height: 110%;
+  width: 105%;
+  height: 105%;
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 1;
-  filter: blur(90px);
-  opacity: 0.85;
+  filter: blur(80px);
+  opacity: 0.35;
   animation: pdAuraBreathe 6s ease-in-out infinite alternate;
 }
 
 @keyframes pdAuraBreathe {
-  0% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.55; }
-  100% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.9; }
+  0% { transform: translate(-50%, -50%) scale(0.96); opacity: 0.25; }
+  100% { transform: translate(-50%, -50%) scale(1.02); opacity: 0.40; }
 }
 
 /* Slide Content Card */
@@ -202,10 +201,9 @@
   display: flex;
   border-radius: 22px;
   overflow: hidden;
-  background: rgba(19, 30, 50, 0.85);
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.7);
+  background: #0D1B2A;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(11, 23, 42, 0.6);
   position: relative;
   z-index: 2;
   transition: border-color 0.4s ease, box-shadow 0.4s ease;
@@ -214,7 +212,7 @@
 .pd-slide-media {
   flex: 1.2;
   position: relative;
-  background-color: #070D19;
+  background-color: #08111E;
   overflow: hidden;
 }
 
@@ -239,14 +237,14 @@
   object-fit: cover;
 }
 
-/* Media Subtle Gradient Overlay */
+/* Media Seamless Dark Blue Edge Overlay */
 .pd-slide-media-gradient-overlay {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  background: linear-gradient(to right, transparent 65%, rgba(15, 26, 46, 0.75) 100%);
+  background: linear-gradient(to right, transparent 75%, rgba(13, 27, 42, 0.95) 100%);
   pointer-events: none;
 }
 
@@ -359,7 +357,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at 50% 40%, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+  background: #08111E;
   padding: 2rem;
   position: relative;
   overflow: hidden;
@@ -797,6 +795,72 @@
   50% {
     transform: scale(1.4);
     opacity: 0.55;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE LAYOUT OPTIMIZATIONS (Tablet, Mobile, Kiosk)
+   ========================================================= */
+@media (max-width: 1024px) {
+  .pd-main-stage {
+    padding: 1rem 1.5rem;
+  }
+
+  .pd-slide {
+    width: calc(100% - 3rem);
+    height: calc(100% - 2rem);
+  }
+
+  .pd-slide-content {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .pd-slide-media {
+    flex: none;
+    height: 40%;
+    min-height: 240px;
+  }
+
+  .pd-slide-info {
+    padding: 1.75rem;
+  }
+
+  .pd-slide-title {
+    font-size: 1.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .pd-header {
+    height: 72px;
+    padding: 0 1.25rem;
+  }
+
+  .pd-ministry-title h1 {
+    font-size: 0.95rem;
+  }
+
+  .pd-ministry-title h2 {
+    font-size: 0.75rem;
+  }
+
+  .pd-main-stage {
+    padding: 0.75rem 1rem;
+  }
+
+  .pd-slide {
+    width: calc(100% - 2rem);
+    height: calc(100% - 1.5rem);
+  }
+
+  .pd-slide-title {
+    font-size: 1.45rem;
+  }
+
+  .pd-slide-desc {
+    font-size: 1rem;
+    -webkit-line-clamp: 3;
   }
 }
 

@@ -365,10 +365,10 @@ export default function PublicDisplayPage() {
     '--msd-accent': settings.theme_color || '#134074',
     '--msd-primary': settings.theme_color || '#0B2545',
     '--theme-color': settings.theme_color || '#134074',
-    background: settings.theme_color 
-      ? `radial-gradient(circle at 50% 20%, ${settings.theme_color}38 0%, #0B1120 70%, #070D19 100%)`
-      : undefined
-  } : {};
+    backgroundColor: '#0B172A'
+  } : {
+    backgroundColor: '#0B172A'
+  };
 
   // Background overlay rendering
   const bgOverlayStyle = settings?.background_url ? {
@@ -474,24 +474,20 @@ export default function PublicDisplayPage() {
           </div>
         ) : activeItem && !urgentMessage ? (
           <div key={`${currentIndex}-${lang}`} className="pd-slide active">
-            {/* Dynamic Ambient Color Aura Glow */}
+            {/* Dynamic Ambient Color Aura Glow (Controlled subtle depth) */}
             <div 
               className="pd-slide-ambient-aura"
               style={{
-                background: `radial-gradient(circle at 65% 50%, ${activeItem.card_color || '#2563EB'}35 0%, transparent 68%)`
+                background: `radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.18) 0%, transparent 70%)`
               }}
             />
 
             <div
               className="pd-slide-content"
               style={{
-                background: activeItem.card_color 
-                  ? `linear-gradient(135deg, ${activeItem.card_color}30 0%, rgba(15, 26, 46, 0.90) 100%)` 
-                  : 'linear-gradient(135deg, rgba(37, 99, 235, 0.22) 0%, rgba(15, 26, 46, 0.90) 100%)',
-                borderColor: activeItem.card_color ? `${activeItem.card_color}85` : 'rgba(255, 255, 255, 0.12)',
-                boxShadow: activeItem.card_color 
-                  ? `0 25px 65px -12px rgba(0, 0, 0, 0.7), 0 0 45px ${activeItem.card_color}35` 
-                  : '0 25px 65px -12px rgba(0, 0, 0, 0.7), 0 0 35px rgba(37, 99, 235, 0.25)'
+                background: '#0D1B2A',
+                borderColor: activeItem.card_color ? `${activeItem.card_color}60` : 'rgba(255, 255, 255, 0.08)',
+                boxShadow: '0 25px 60px -12px rgba(0, 0, 0, 0.85), 0 0 25px rgba(11, 23, 42, 0.5)'
               }}
             >
               {/* Media Section (Side of the Information) */}
@@ -506,9 +502,7 @@ export default function PublicDisplayPage() {
                   <div
                     className="pd-slide-media-placeholder"
                     style={{
-                      background: activeItem.card_color 
-                        ? `linear-gradient(135deg, ${activeItem.card_color}25 0%, rgba(11, 24, 45, 0.95) 100%)` 
-                        : undefined
+                      background: '#08111E'
                     }}
                   >
                     <div className="pd-logo-hero-container">
